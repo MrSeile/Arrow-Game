@@ -15,7 +15,7 @@ void ReadFile(std::string path, World &world)
 {
 	namespace fs = std::experimental::filesystem;
 
-	// Input type enumeratio
+	// Input type enumeration
 	enum class Type
 	{
 		Null,
