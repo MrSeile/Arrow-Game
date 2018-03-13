@@ -1,0 +1,25 @@
+SETTINGS
+{
+	Circuit
+	880
+	880
+	0
+}
+
+TIME
+{
+	20
+	15
+	12
+	10.5
+}
+
+IMAGE
+{
+	levels/Circuit/Circuit.png
+}
+
+NEXTLEVEL
+{
+	levels/FastSnake/FastSnake.scn
+}

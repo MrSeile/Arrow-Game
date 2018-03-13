@@ -1,0 +1,49 @@
+SETTINGS
+{
+	Hexagon
+	565
+	1060
+	-90
+}
+
+TIME
+{
+	35
+	15
+	10.7
+	10
+}
+
+NEXTLEVEL
+{
+	levels/Smoke/Smoke.scn
+}
+
+IMAGE
+{
+	levels/Hexagon/Hexagon.png
+}
+
+OCOLOR
+{
+	255
+	73
+	73
+	255
+}
+
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
+
+GCOLOR
+{
+	0
+	255
+	33
+	255
+}

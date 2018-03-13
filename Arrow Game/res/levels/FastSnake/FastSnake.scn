@@ -1,0 +1,33 @@
+SETTINGS
+{
+	Fast_Snake
+	330
+	1790
+	0
+}
+
+TIME
+{
+	50
+	13
+	11.5
+	10.5
+}
+
+IMAGE
+{
+	levels/FastSnake/FastSnake.png
+}
+
+NEXTLEVEL
+{
+	levels/Color/Color.scn
+}
+
+ROCOLOR
+{
+	255
+	0
+	100
+	255
+}

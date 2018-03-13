@@ -1,0 +1,41 @@
+SETTINGS
+{
+	Last_One
+	160
+	1000
+	0
+}
+
+TIME
+{
+	20
+	10
+	8.5
+	7.5
+}
+
+NEXTLEVEL
+{
+	levels/Star/Star.scn
+}
+
+IMAGE
+{
+	levels/Outline/Outline.png
+}
+
+OCOLOR
+{
+	255
+	255
+	255
+	255
+}
+
+ROCOLOR
+{
+	200
+	200
+	200
+	255
+}

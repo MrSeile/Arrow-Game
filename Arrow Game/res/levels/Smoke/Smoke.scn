@@ -1,0 +1,41 @@
+SETTINGS
+{
+	Smoke
+	1470
+	790
+	-80
+}
+
+TIME
+{
+	20
+	16
+	13
+	12
+}
+
+IMAGE
+{
+	levels/Smoke/Smoke.png
+}
+
+NEXTLEVEL
+{
+	NULL
+}
+
+OCOLOR
+{
+	104
+	119
+	255
+	255
+}
+
+GCOLOR
+{
+	117
+	255
+	133
+	255
+}

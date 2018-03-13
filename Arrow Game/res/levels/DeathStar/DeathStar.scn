@@ -1,0 +1,57 @@
+SETTINGS
+{
+	DeathStar
+	570
+	1640
+	-150
+}
+
+TIME
+{
+	20
+	15
+	13
+	11
+}
+
+NEXTLEVEL
+{
+	levels/Hexagon/Hexagon.scn
+}
+
+IMAGE
+{
+	levels/DeathStar/DeathStar.png
+}
+
+OCOLOR
+{
+	255
+	255
+	255
+	255
+}
+
+RCOLOR
+{
+	104
+	119
+	255
+	255
+}
+
+BCOLOR
+{
+	255
+	255
+	255
+	255
+}
+
+GCOLOR
+{
+	71
+	255
+	98
+	255
+}

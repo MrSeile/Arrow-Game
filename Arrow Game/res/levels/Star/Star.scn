@@ -1,0 +1,25 @@
+SETTINGS
+{
+	Star
+	870
+	400
+	120
+}
+
+TIME
+{
+	40
+	30
+	25
+	20
+}
+
+IMAGE
+{
+	levels/Star/Star.png
+}
+
+NEXTLEVEL
+{
+	levels/DeathStar/DeathStar.scn
+}
