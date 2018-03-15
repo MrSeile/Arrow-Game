@@ -49,10 +49,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	ui::Text* title = m_menu.AddText("text1", sf::Vector2i(10, 10), m_font);
 	title->setOutlineColor(sf::Color::Black);
 	title->setOutlineThickness(2);
+	title->setString("Arrow Game");
+	title->setCharacterSize(80);
 
 	title->setUpdateFunction([&](ui::Text *self)
 	{
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 10), (int)(window.getSize().y - self->getGlobalBounds().height * 1.5f - 10))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 80), (int)(window.getSize().y - self->getGlobalBounds().height * 1.5f - 10))));
 	});
 
 	// Buttons

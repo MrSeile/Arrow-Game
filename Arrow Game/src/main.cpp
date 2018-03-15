@@ -154,7 +154,7 @@ void ReadFile(std::string path, World &world)
 				{
 					if (line == 1)
 					{
-						world.ImgPath = val;
+						world.ImgPath = "res/" + val;
 					}
 				}
 				// Level to open afterwards
@@ -309,7 +309,7 @@ void WriteFile(std::vector<World> &worlds)
 	for (World &w : worlds)
 	{
 		std::ofstream ableFile;
-		ableFile.open(w.AblePath, std::ofstream::out | std::ofstream::trunc);
+		ableFile.open("res/" + w.AblePath, std::ofstream::out | std::ofstream::trunc);
 
 		ableFile << w.able << std::endl;
 		ableFile << w.completed << std::endl;
