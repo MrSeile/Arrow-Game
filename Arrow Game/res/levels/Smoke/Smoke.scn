@@ -5,7 +5,6 @@ SETTINGS
 	790
 	-80
 }
-
 TIME
 {
 	20
@@ -13,17 +12,28 @@ TIME
 	13
 	12
 }
-
 IMAGE
 {
 	levels/Smoke/Smoke.png
 }
-
 NEXTLEVEL
 {
 	NULL
 }
-
+ROCOLOR
+{
+	0
+	0
+	0
+	255
+}
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
 OCOLOR
 {
 	104
@@ -31,11 +41,17 @@ OCOLOR
 	255
 	255
 }
-
 GCOLOR
 {
 	117
 	255
 	133
+	255
+}
+BCOLOR
+{
+	104
+	119
+	255
 	255
 }

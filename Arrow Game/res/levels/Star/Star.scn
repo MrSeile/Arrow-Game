@@ -5,7 +5,6 @@ SETTINGS
 	400
 	120
 }
-
 TIME
 {
 	40
@@ -13,13 +12,46 @@ TIME
 	25
 	20
 }
-
 IMAGE
 {
 	levels/Star/Star.png
 }
-
 NEXTLEVEL
 {
-	levels/DeathStar/DeathStar.scn
+	levels/Smoke/Smoke.scn
+}
+ROCOLOR
+{
+	0
+	0
+	0
+	255
+}
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
+OCOLOR
+{
+	50
+	50
+	50
+	255
+}
+GCOLOR
+{
+	0
+	255
+	0
+	255
+}
+BCOLOR
+{
+	50
+	50
+	50
+	255
 }

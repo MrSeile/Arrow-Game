@@ -21,6 +21,11 @@ public:
 	void Update(const State &state, sf::RenderWindow &window);
 	void Draw(const State &state, sf::RenderWindow &window);
 	void CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &window, const sf::Event &evt);
+
+	Widget& GetMenuWidget();
+	Widget& GetPauseWidget();
+	Widget& GetPlayWidget();
+	Widget& GetFinishWidget();
 	
 	void ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr);
 };

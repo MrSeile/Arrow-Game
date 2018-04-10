@@ -5,7 +5,6 @@ SETTINGS
 	447
 	0
 }
-
 TIME
 {
 	50
@@ -13,25 +12,21 @@ TIME
 	18
 	15
 }
-
 IMAGE
 {
 	levels/Color/Color.png
 }
-
 NEXTLEVEL
 {
-	levels/Outline/Outline.scn
+	levels/DeathStar/DeathStar.scn
 }
-
-OCOLOR
+ROCOLOR
 {
 	0
-	128
-	128
+	0
+	0
 	255
 }
-
 RCOLOR
 {
 	255
@@ -39,7 +34,20 @@ RCOLOR
 	255
 	255
 }
-
+OCOLOR
+{
+	0
+	128
+	128
+	255
+}
+GCOLOR
+{
+	0
+	255
+	0
+	255
+}
 BCOLOR
 {
 	0

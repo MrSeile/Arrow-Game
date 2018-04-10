@@ -18,10 +18,28 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Global.h" />
+    <ClInclude Include="src\Player\Rocket.h" />
+    <ClInclude Include="src\UI\Button.h" />
+    <ClInclude Include="src\UI\Sprite.h" />
+    <ClInclude Include="src\UI\Text.h" />
+    <ClInclude Include="src\UI\UserInterface.h" />
+    <ClInclude Include="src\UI\Widget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Player\Rocket.cpp" />
+    <ClCompile Include="src\UI\Button.cpp" />
+    <ClCompile Include="src\UI\Sprite.cpp" />
+    <ClCompile Include="src\UI\Text.cpp" />
+    <ClCompile Include="src\UI\UserInterface.cpp" />
+    <ClCompile Include="src\UI\Widget.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2341A92F-0DCB-4BA4-87A9-CD29A12BBFF6}</ProjectGuid>
+    <ProjectGuid>{44D12EDC-BB49-4908-8443-DF93BDFF0A43}</ProjectGuid>
     <RootNamespace>ArrowGame</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,11 +93,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/SFML-2.4.2 vs 32/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>UI/;Player/;scr/;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/SFML-2.4.2 vs 32/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -97,13 +119,17 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/SFML-2.4.2 vs 32/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>UI/;Player/;scr/;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)/SFML-2.4.2 vs 32/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,24 +145,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Global.h" />
-    <ClInclude Include="src\Player\Rocket.h" />
-    <ClInclude Include="src\UI\Button.h" />
-    <ClInclude Include="src\UI\Sprite.h" />
-    <ClInclude Include="src\UI\Text.h" />
-    <ClInclude Include="src\UI\UserInterface.h" />
-    <ClInclude Include="src\UI\Widget.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Player\Rocket.cpp" />
-    <ClCompile Include="src\UI\Button.cpp" />
-    <ClCompile Include="src\UI\Sprite.cpp" />
-    <ClCompile Include="src\UI\Text.cpp" />
-    <ClCompile Include="src\UI\UserInterface.cpp" />
-    <ClCompile Include="src\UI\Widget.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

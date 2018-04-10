@@ -30,6 +30,7 @@ namespace ui
 		// Get
 		bool getAble();
 		std::function<void(Button *self)> getClickEvent();
+		std::function<void(Button *self)> getUpdateFunction();
 		sf::Vector2f getPosition();
 
 		// Variables

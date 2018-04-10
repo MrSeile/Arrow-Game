@@ -5,7 +5,6 @@ SETTINGS
 	1060
 	-90
 }
-
 TIME
 {
 	35
@@ -13,25 +12,21 @@ TIME
 	10.7
 	10
 }
-
-NEXTLEVEL
-{
-	levels/Smoke/Smoke.scn
-}
-
 IMAGE
 {
 	levels/Hexagon/Hexagon.png
 }
-
-OCOLOR
+NEXTLEVEL
 {
-	255
-	73
-	73
+	levels/Color/Color.scn
+}
+ROCOLOR
+{
+	0
+	0
+	0
 	255
 }
-
 RCOLOR
 {
 	255
@@ -39,11 +34,24 @@ RCOLOR
 	255
 	255
 }
-
+OCOLOR
+{
+	255
+	73
+	73
+	255
+}
 GCOLOR
 {
 	0
 	255
 	33
+	255
+}
+BCOLOR
+{
+	50
+	50
+	50
 	255
 }

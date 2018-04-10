@@ -66,6 +66,11 @@ std::function<void(ui::Button *self)> ui::Button::getClickEvent()
 	return m_clickFunction;
 }
 
+std::function<void(ui::Button *self)> ui::Button::getUpdateFunction()
+{
+	return m_updateFunction;
+}
+
 void ui::Button::Draw(sf::RenderWindow &window)
 {
 	window.draw(shape);

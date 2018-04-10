@@ -1,6 +1,6 @@
 #pragma once
 
-#define NO_RECORD 123456
+#define NO_RECORD 123456789.0f
 #define PI 3.1415926535
 
 ///////////////////
@@ -18,6 +18,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cmath>
+#include <Windows.h>
 
 // State enumeration
 enum class State

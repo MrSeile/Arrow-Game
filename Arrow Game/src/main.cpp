@@ -1,20 +1,24 @@
 /*
 *	Name:		Arrow Game
 *	Author:		Elies Bertran Roca
-*	Date:		22/02/2018
-*	Version:	beta 1.0
-*	Revision:	001
+*	Date:		10/04/2018
+*	Version:	1.4
+*	Revision:	003
 */
+
+#ifndef _DEBUG
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
 
 #include "Global.h"
 #include "Player/Rocket.h"
 #include "UI/UserInterface.h"
 
+namespace fs = std::experimental::filesystem;
+
 // Generate a world from a file
 void ReadFile(std::string path, World &world)
 {
-	namespace fs = std::experimental::filesystem;
-
 	// Input type enumeration
 	enum class Type
 	{
@@ -275,6 +279,8 @@ void ReadFile(std::string path, World &world)
 	std::ifstream ableFile;
 	ableFile.open("res/" + ablePath, std::ios::in | std::ios::app | std::ios::binary);
 
+	double code;
+
 	line = 0;
 	while (ableFile >> val)
 	{
@@ -282,15 +288,26 @@ void ReadFile(std::string path, World &world)
 		switch (line)
 		{
 		case 1:
-			world.able = val == "1" ? true : false;
+			code = std::stod(val);
 			break;
 
 		case 2:
-			world.completed = std::stoi(val);
+			world.able = (std::stoi(val) / (code * code)) - 1 == 1 ? true : false;
 			break;
 
 		case 3:
-			world.record = std::stof(val);
+			world.completed = (std::stoi(val) / (code * code)) - 1;
+			break;
+
+		case 4:
+			if (val == "NO_RECORD")
+			{
+				world.record = NO_RECORD;
+			}
+			else
+			{
+				world.record = (std::stof(val) / (code * code)) - 1;
+			}
 			break;
 		}
 
@@ -311,9 +328,20 @@ void WriteFile(std::vector<World> &worlds)
 		std::ofstream ableFile;
 		ableFile.open("res/" + w.AblePath, std::ofstream::out | std::ofstream::trunc);
 
-		ableFile << w.able << std::endl;
-		ableFile << w.completed << std::endl;
-		ableFile << w.record << std::endl;
+		srand(time(NULL));
+		int random = rand();
+
+		ableFile << std::fixed << random << std::endl;
+		ableFile << std::fixed << (w.able + 1) * (random * random) << std::endl;
+		ableFile << std::fixed << (w.completed + 1) * (random * random) << std::endl;
+		if (w.record == NO_RECORD)
+		{
+			ableFile << "NO_RECORD" << std::endl;
+		}
+		else
+		{
+			ableFile << std::fixed << (w.record + 1) * (random * random) << std::endl;
+		}
 
 		ableFile.close();
 	}
@@ -325,7 +353,14 @@ void GenerateWorld(std::vector<World> &worlds)
 	int index = 0;
 
 	World w;
-	ReadFile("levels/Circuit/Circuit.scn", w);
+
+	std::ifstream settings;
+	settings.open("res/levels/settings.stg");
+
+	std::string s;
+	std::getline(settings, s);
+
+	ReadFile(s, w);
 
 	w.index = index;
 
@@ -415,6 +450,16 @@ int main()
 
 				UI.ResetUi(window, r, ctr);
 			}
+			if (evt.type == sf::Event::KeyPressed)
+			{
+				if (evt.key.code == sf::Keyboard::Q)
+				{
+					sf::Texture text;
+					text.create(window.getSize().x, window.getSize().y);
+					text.update(window);
+					text.copyToImage().saveToFile("testing.png");
+				}
+			}
 		}
 
 		// Clear the screen
@@ -427,7 +472,7 @@ int main()
 		}
 
 		// Cheat ;D
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
+		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
 			sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
 		{
 			for (World &w : ctr.worlds)
@@ -435,7 +480,7 @@ int main()
 				w.able = true;
 				UI.ResetUi(window, r, ctr);
 			}
-		}
+		}*/
 
 		////////////////////////
 		// If I'm playing...

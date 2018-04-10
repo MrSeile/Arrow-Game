@@ -5,7 +5,6 @@ SETTINGS
 	1790
 	0
 }
-
 TIME
 {
 	50
@@ -13,21 +12,46 @@ TIME
 	11.5
 	10.5
 }
-
 IMAGE
 {
 	levels/FastSnake/FastSnake.png
 }
-
 NEXTLEVEL
 {
-	levels/Color/Color.scn
+	levels/Pink/Pink.scn
 }
-
 ROCOLOR
 {
 	255
 	0
 	100
+	255
+}
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
+OCOLOR
+{
+	50
+	50
+	50
+	255
+}
+GCOLOR
+{
+	0
+	255
+	0
+	255
+}
+BCOLOR
+{
+	50
+	50
+	50
 	255
 }

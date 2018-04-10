@@ -14,7 +14,10 @@ static void Reset(Rocket &r, World &world)
 
 UserInterface::UserInterface(sf::RenderWindow &window, Rocket &r, Controller &ctr)
 {
-	m_font.loadFromFile("res/font/other.ttf");
+	if (!m_font.loadFromFile("res/font/font.ttf"))
+	{
+		std::cout << "CHEHD" << std::endl;
+	}
 
 	ResetUi(window, r, ctr);
 }
@@ -59,7 +62,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 	// Buttons
 	ui::Button *resB = m_menu.AddButton("Reset", sf::Vector2f(), m_font);
-	resB->text.setString("Reset");
+	resB->text.setString("Reset progress");
 	resB->text.setCharacterSize(20);
 	resB->shape.setSize(sf::Vector2f(resB->text.getGlobalBounds().width + 20, 30));
 
@@ -70,14 +73,17 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 	resB->setClickFunction([&](ui::Button *self)
 	{
-		for (World &w : ctr.worlds)
+		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
 		{
-			w.able = w.index != 0 ? false : true;
-			w.completed = 0;
-			w.record = NO_RECORD;
-		}
+			for (World &w : ctr.worlds)
+			{
+				w.able = w.index != 0 ? false : true;
+				w.completed = 0;
+				w.record = NO_RECORD;
+			}
 
-		ResetUi(window, r, ctr);
+			ResetUi(window, r, ctr);
+		}
 	});
 
 	sf::Vector2f pos(10, 10);
@@ -88,10 +94,10 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 		b->text.setString(w.id);
 		b->text.setCharacterSize(20);
-		b->shape.setSize(sf::Vector2f(b->text.getGlobalBounds().width + 20, 30));
+		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
 		b->setAble(w.able);
 
-		if (pos.x + b->shape.getSize().x >= window.getSize().x)
+		if (pos.x + b->shape.getGlobalBounds().width * 1.1 >= window.getSize().x)
 		{
 			pos.y += 40;
 			pos.x = 10;
@@ -128,7 +134,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 			}
 		});
 
-		pos.x += b->shape.getGlobalBounds().width + 20;
+		pos.x += b->shape.getGlobalBounds().width * 1.1f + 5;
 	}
 
 	/////////////////////////
@@ -216,7 +222,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	recordT->setUpdateFunction([&](ui::Text *self)
 	{
 		std::stringstream t_record;
-		if (ctr.cWorld->record != NO_RECORD)
+		if ((int)ctr.cWorld->record != NO_RECORD)
 		{
 			t_record << std::fixed << std::setprecision(3) << "Record:\n" << ctr.cWorld->record << "s";
 		}
@@ -271,6 +277,25 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 
 	// Texts
+	ui::Text *newRecordT = m_finish.AddText("newRecord", sf::Vector2i(), m_font);
+	newRecordT->setCharacterSize(30);
+	newRecordT->setFillColor(sf::Color::Black);
+
+	newRecordT->setUpdateFunction([&](ui::Text *self)
+	{
+		if (ctr.cWorld->currentT == ctr.cWorld->record)
+		{
+			self->setString("NEW RECORD!");
+		}
+		else
+		{
+			self->setString("");
+		}
+
+		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - 55)));
+	});
+
 	ui::Text *levelTitleF = m_finish.AddText("levelTitleF", sf::Vector2i(), m_font);
 	levelTitleF->setCharacterSize(40);
 	levelTitleF->setOutlineThickness(1);
@@ -483,4 +508,24 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 			}
 		}
 	}
+}
+
+Widget& UserInterface::GetMenuWidget()
+{
+	return m_menu;
+}
+
+Widget& UserInterface::GetPauseWidget()
+{
+	return m_pause;
+}
+
+Widget& UserInterface::GetPlayWidget()
+{
+	return m_play;
+}
+
+Widget& UserInterface::GetFinishWidget()
+{
+	return m_finish;
 }
