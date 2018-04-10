@@ -14,10 +14,7 @@ static void Reset(Rocket &r, World &world)
 
 UserInterface::UserInterface(sf::RenderWindow &window, Rocket &r, Controller &ctr)
 {
-	if (!m_font.loadFromFile("res/font/font.ttf"))
-	{
-		std::cout << "CHEHD" << std::endl;
-	}
+	m_font.loadFromFile("res/font/font.ttf");
 
 	ResetUi(window, r, ctr);
 }
