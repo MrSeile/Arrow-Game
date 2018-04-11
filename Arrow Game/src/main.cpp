@@ -6,10 +6,6 @@
 *	Revision:	003
 */
 
-#ifndef _DEBUG
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
-
 #include "Global.h"
 #include "Player/Rocket.h"
 #include "UI/UserInterface.h"
@@ -394,9 +390,18 @@ void Reset(Rocket &r, World &world)
 	r.drawable.setRotation(world.rotation);
 }
 
+int bToh(const int &val)
+{
+	return (val / 255) * 100;
+}
+
 
 int main()
 {
+	LogiLedInit();
+
+	LogiLedSetLighting(100, 100, 100);
+
 	// Set the original screen size
 	Config cfg;
 	cfg.iX = 960;
@@ -428,6 +433,40 @@ int main()
 	// Generate the user interface	
 	UserInterface UI(window, r, ctr);
 
+	// Ligthing
+	std::thread ligthing([&]
+	{
+		while (true)
+		{
+			switch (ctr.GetState())
+			{
+			case State::Menu:
+			{
+				LogiLedSetLighting(100, 100, 100);
+				break;
+			}
+			case State::Pause:
+			{
+				LogiLedSetLighting(100, 100, 100);
+				break;
+			}
+			case State::Playing:
+			{
+				LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
+				break;
+			}
+			case State::End:
+			{
+				if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		LogiLedSetLighting(100, 78, 0);
+				else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting(82, 82, 82);
+				else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting(65, 44, 39);
+				else														LogiLedSetLighting(100, 100, 100);
+				break;
+			}
+			}
+		}
+	});
+
 	// Main loop
 	while (window.isOpen())
 	{
@@ -440,6 +479,9 @@ int main()
 			if (evt.type == sf::Event::Closed)
 			{
 				WriteFile(ctr.worlds);
+
+				ligthing.detach();
+				LogiLedShutdown();
 
 				window.close();
 			}
@@ -465,7 +507,7 @@ int main()
 		// Clear the screen
 		window.clear(ctr.cWorld->backgrowndColor);
 
-		if (ctr.state == State::End || ctr.state == State::Pause || ctr.state == State::Playing)
+		if (ctr.GetState() == State::End || ctr.GetState() == State::Pause || ctr.GetState() == State::Playing)
 		{
 			// Draw the level backgorwnd image
 			window.draw(ctr.cWorld->levelSpr);
@@ -485,7 +527,7 @@ int main()
 		////////////////////////
 		// If I'm playing...
 		////////////////////////
-		if (ctr.state == State::Playing)
+		if (ctr.GetState() == State::Playing)
 		{
 			// Update time
 			ctr.cWorld->Update();
@@ -498,7 +540,7 @@ int main()
 			if (ctr.cWorld->currentT > ctr.cWorld->time.maxT)
 			{
 				Reset(r, *ctr.cWorld);
-				ctr.state = State::Pause;
+				ctr.SetState(State::Pause);
 				continue;
 			}
 
@@ -506,12 +548,12 @@ int main()
 			if (ctr.cWorld->levelImg.getPixel((unsigned int)r.pos.x, (unsigned int)r.pos.y) == ctr.cWorld->obstacleColor)
 			{
 				Reset(r, *ctr.cWorld);
-				ctr.state = State::Pause;
+				ctr.SetState(State::Pause);
 				continue;
 			}
 			if (ctr.cWorld->levelImg.getPixel((unsigned int)r.pos.x, (unsigned int)r.pos.y) == ctr.cWorld->goalColor)
 			{
-				ctr.state = State::End;
+				ctr.SetState(State::End);
 				ctr.cWorld->completed = 1;
 
 				if (ctr.cWorld->currentT < ctr.cWorld->record)
@@ -534,8 +576,8 @@ int main()
 		window.setView(view);
 
 		// Update and draw the user interface
-		UI.Update(ctr.state, window);
-		UI.Draw(ctr.state, window);
+		UI.Update(ctr.GetState(), window);
+		UI.Draw(ctr.GetState(), window);
 
 		// Display everything
 		window.display();

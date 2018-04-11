@@ -7,6 +7,8 @@
 // Global things
 ///////////////////
 
+
+#include <LogitechLEDLib.h>
 #include <SFML\Graphics.hpp>
 #include <iostream>
 #include <vector>
@@ -19,6 +21,13 @@
 #include <iomanip>
 #include <cmath>
 #include <Windows.h>
+#include <thread>
+
+#ifndef _DEBUG
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
+#pragma comment(lib, "LogitechLEDLib.lib")
 
 // State enumeration
 enum class State
@@ -115,11 +124,13 @@ static sf::Vector2f SafeMousePos(sf::RenderWindow &window, Config cfg)
 	}
 }
 
-struct Controller
+class Controller
 {
+private:
 	// State variable
 	State state = State::Menu;
 
+public:
 	// Array where are all the worlds
 	std::vector<World> worlds;
 
@@ -128,4 +139,14 @@ struct Controller
 
 	// Current world
 	World *cWorld = new World;
+
+	void SetState(const State &newState)
+	{
+		state = newState;
+	}
+
+	const State& GetState()
+	{
+		return state;
+	}
 };
