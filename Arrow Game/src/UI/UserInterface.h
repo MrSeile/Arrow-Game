@@ -1,9 +1,10 @@
 #pragma once
 
 #include "..\Global.h"
-
 #include "Widget.h"
-#include "..\Player\Rocket.h"
+#include "..\Game\Rocket.h"
+#include "..\Game\Controller.h"
+#include "..\Game\World.h"
 
 class UserInterface
 {

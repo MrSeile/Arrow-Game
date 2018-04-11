@@ -120,7 +120,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 			{
 				if (self->id == w.id)
 				{
-					ctr.SetState(State::Pause);
+					ctr.state = State::Pause;
 					ctr.level = w.index;
 					ctr.cWorld = &w;
 
@@ -340,7 +340,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	{
 		if (ctr.worlds[ctr.level].NextLevel != "NULL")
 		{
-			ctr.SetState(State::Pause);
+			ctr.state = State::Pause;
 			ctr.level++;
 			ctr.cWorld = &ctr.worlds[ctr.level];
 			Reset(r, *ctr.cWorld);
@@ -361,7 +361,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 	resetB->setClickFunction([&](ui::Button *self)
 	{
-		ctr.SetState(State::Pause);
+		ctr.state = State::Pause;
 		Reset(r, *ctr.cWorld);
 		ctr.cWorld->timer.restart();
 	});
@@ -379,7 +379,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 	menuB->setClickFunction([&](ui::Button *self)
 	{
-		ctr.SetState(State::Menu);
+		ctr.state = State::Menu;
 		Reset(r, *ctr.cWorld);
 		ResetUi(window, r, ctr);
 	});
@@ -439,7 +439,7 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 {
 	if (evt.type == sf::Event::KeyPressed)
 	{
-		switch (ctr.GetState())
+		switch (ctr.state)
 		{
 		case State::Menu:
 			break;
@@ -447,12 +447,12 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 		case State::Pause:
 			if (evt.key.code == sf::Keyboard::Up)
 			{
-				ctr.SetState(State::Playing);
+				ctr.state = State::Playing;
 				ctr.cWorld->timer.restart();
 			}
 			if (evt.key.code == sf::Keyboard::M)
 			{
-				ctr.SetState(State::Menu);
+				ctr.state = State::Menu;
 				ResetUi(window, r, ctr);
 			}
 			break;
@@ -485,7 +485,7 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 	{
 		if (evt.key.code == sf::Mouse::Left)
 		{
-			switch (ctr.GetState())
+			switch (ctr.state)
 			{
 			case State::Menu:
 				m_menu.CheckInput(window);
