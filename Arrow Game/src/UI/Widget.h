@@ -22,12 +22,12 @@ public:
 	void Draw(sf::RenderWindow &window);
 	void Clear();
 
-	ui::Sprite* AddSprite(const std::string &id, const sf::Vector2f &position);
+	ui::Sprite* AddSprite(ui::Sprite *);
 	ui::Sprite* GetSprite(const std::string &id);
 
-	ui::Button* AddButton(const std::string &id, const sf::Vector2f &size, sf::Font &font);
+	ui::Button* AddButton(ui::Button *);
 	ui::Button* GetButton(const std::string &id);
 
-	ui::Text* AddText(const std::string &id, const sf::Vector2i &position, sf::Font &font);
+	ui::Text* AddText(ui::Text *);
 	ui::Text* GetText(const std::string &id);
 };

@@ -1,9 +1,8 @@
 #include "Text.h"
 
-ui::Text::Text(const std::string &id, const sf::Vector2i &postion, sf::Font &font)
+ui::Text::Text(const std::string &id)
 	: id(id)
 {
-	setFont(font);
 }
 
 void ui::Text::Update(const sf::RenderWindow &window)

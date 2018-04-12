@@ -11,7 +11,7 @@ namespace ui
 		bool m_hasCustomUpdateFunction = false;
 
 	public:
-		Sprite(const std::string &id, const sf::Vector2f &position);
+		Sprite(const std::string &id);
 
 		void Update(const sf::RenderWindow &window);
 		void Draw(sf::RenderWindow &window);

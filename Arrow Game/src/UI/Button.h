@@ -15,7 +15,7 @@ namespace ui
 
 	public:
 		// Constructor
-		Button(const std::string &id, const sf::Vector2f &size, sf::Font &font);
+		Button(const std::string &id);
 
 		// Generals
 		void CheckClick(const sf::RenderWindow &window);

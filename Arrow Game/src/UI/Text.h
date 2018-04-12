@@ -14,7 +14,7 @@ namespace ui
 
 	public:
 		// Constructor
-		Text(const std::string &id, const sf::Vector2i &position, sf::Font &font);
+		Text(const std::string &id);
 
 		// Generals
 		void Update(const sf::RenderWindow &window);

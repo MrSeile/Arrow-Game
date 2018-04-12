@@ -1,15 +1,13 @@
 #include "Button.h"
 
-ui::Button::Button(const std::string &id, const sf::Vector2f &size, sf::Font &font)
+ui::Button::Button(const std::string &id)
 	: id(id)
 {
-	text.setFont(font);
 	text.setFillColor(sf::Color::Black);
 	text.setCharacterSize(10);
 
 	shape.setOutlineThickness(1);
 	shape.setOutlineColor(sf::Color::Black);
-	shape.setSize(size);
 }
 
 void ui::Button::CheckClick(const sf::RenderWindow &window)

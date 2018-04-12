@@ -1,9 +1,9 @@
 #include "Sprite.h"
 
-ui::Sprite::Sprite(const std::string &id, const sf::Vector2f &position)
+ui::Sprite::Sprite(const std::string &id)
 	: id(id)
 {
-	setPosition(position);
+
 }
 
 void ui::Sprite::Update(const sf::RenderWindow &window)

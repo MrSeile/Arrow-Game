@@ -10,6 +10,7 @@ class UserInterface
 {
 private:
 	Widget m_menu;
+	Widget m_options;
 	Widget m_pause;
 	Widget m_play;
 	Widget m_finish;
@@ -24,6 +25,7 @@ public:
 	void CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &window, const sf::Event &evt);
 
 	Widget& GetMenuWidget();
+	Widget& GetOptionsWidget();
 	Widget& GetPauseWidget();
 	Widget& GetPlayWidget();
 	Widget& GetFinishWidget();

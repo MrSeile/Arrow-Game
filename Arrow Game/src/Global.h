@@ -30,5 +30,6 @@ enum class State
 	Pause,
 	Playing,
 	Menu,
+	Options,
 	End
 };
