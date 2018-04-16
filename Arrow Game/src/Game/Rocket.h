@@ -10,7 +10,7 @@ public:
 	// Functions
 	void Update(float dT);
 	float Input(float dT);
-	void Draw(sf::RenderWindow &window);
+	void Draw(sf::RenderWindow& window);
 
 	// Arrow mass
 	float mass;

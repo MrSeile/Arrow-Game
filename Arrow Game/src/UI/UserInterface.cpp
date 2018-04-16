@@ -1,6 +1,6 @@
 #include "UserInterface.h"
 
-static void Reset(Rocket &r, World &world)
+static void Reset(Rocket& r, World& world)
 {
 	world.levelImg.loadFromFile(world.ImgPath);
 	world.levelTex.loadFromFile(world.ImgPath);
@@ -12,14 +12,19 @@ static void Reset(Rocket &r, World &world)
 	r.drawable.setRotation(world.rotation);
 }
 
-UserInterface::UserInterface(sf::RenderWindow &window, Rocket &r, Controller &ctr)
+void UserInterface::Apply(Controller& ctr)
+{
+	ctr.settings.SetAudioLevel(m_options.GetSlider("audio")->GetValue());
+}
+
+UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr)
 {
 	m_font.loadFromFile("res/font/font.ttf");
 
 	ResetUi(window, r, ctr);
 }
 
-void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr)
+void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr)
 {
 	// Clear everything
 	m_menu.Clear();
@@ -30,6 +35,11 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	////////////////////
 	// MENU
 	////////////////////
+	// Sliders
+	ui::Slider* audioSlider = new ui::Slider("audio");
+	audioSlider->SetValue(ctr.settings.GetAudioLevel());
+	m_options.AddSlider(audioSlider);
+
 	// Sprites
 	sf::Texture* menuImg_t = new sf::Texture;
 	menuImg_t->loadFromFile("res/img/menu.png");
@@ -38,7 +48,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	menuImg->setTexture(*menuImg_t);
 	menuImg->setOrigin(sf::Vector2f(menuImg->getLocalBounds().width / 2.f, menuImg->getLocalBounds().height / 2.f));
 
-	menuImg->setUpdateFunction([&](ui::Sprite *self)
+	menuImg->setUpdateFunction([&](ui::Sprite* self)
 	{
 		self->setScale(((float)window.getSize().x / (float)self->getTexture()->getSize().x) / 1.1f, ((float)window.getSize().y / (float)self->getTexture()->getSize().y) / 1.1f);
 
@@ -54,29 +64,47 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	title->setString("Arrow Game");
 	title->setCharacterSize(80);
 
-	title->setUpdateFunction([&](ui::Text *self)
+	title->setUpdateFunction([&](ui::Text* self)
 	{
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 80), (int)(window.getSize().y - self->getGlobalBounds().height * 1.5f - 10))));
+		self->setString(std::to_string(m_options.GetSlider("audio")->GetValue()));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 80), (int)(window.getSize().y - self->getGlobalBounds().height*  1.5f - 10))));
 	});
 	m_menu.AddText(title);
 
 	// Buttons
-	ui::Button *resB = new ui::Button("Reset");
+	ui::Button* optionsBut = new ui::Button("OptionsBut");
+	optionsBut->text.setFont(m_font);
+	optionsBut->text.setString("Options");
+	optionsBut->text.setCharacterSize(20);
+	optionsBut->shape.setSize(sf::Vector2f(optionsBut->text.getGlobalBounds().width + 20, 30));
+
+	optionsBut->setUpdateFunction([&](ui::Button* self)
+	{
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+	});
+
+	optionsBut->setClickFunction([&](ui::Button* self)
+	{
+		ctr.SetState(State::Options);
+	});
+	m_menu.AddButton(optionsBut);
+
+	/*ui::Button* resB = new ui::Button("Reset");
 	resB->text.setFont(m_font);
 	resB->text.setString("Reset progress");
 	resB->text.setCharacterSize(20);
 	resB->shape.setSize(sf::Vector2f(resB->text.getGlobalBounds().width + 20, 30));
 
-	resB->setUpdateFunction([&](ui::Button *self)
+	resB->setUpdateFunction([&](ui::Button* self)
 	{
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
 	});
 
-	resB->setClickFunction([&](ui::Button *self)
+	resB->setClickFunction([&](ui::Button* self)
 	{
 		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
 		{
-			for (World &w : ctr.worlds)
+			for (World& w : ctr.worlds)
 			{
 				w.able = w.index != 0 ? false : true;
 				w.completed = 0;
@@ -86,12 +114,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 			ResetUi(window, r, ctr);
 		}
 	});
-	m_menu.AddButton(resB);
+	m_menu.AddButton(resB);*/
 
 
 	sf::Vector2f pos(10, 10);
 
-	for (World &w : ctr.worlds)
+	for (World& w : ctr.worlds)
 	{
 		ui::Button* b = new ui::Button(w.id);
 		b->text.setFont(m_font);
@@ -100,13 +128,13 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
 		b->setAble(w.able);
 
-		if (pos.x + b->shape.getGlobalBounds().width * 1.1 >= window.getSize().x)
+		if (pos.x + b->shape.getGlobalBounds().width*  1.1 >= window.getSize().x)
 		{
 			pos.y += 40;
 			pos.x = 10;
 		}
 
-		b->setUpdateFunction([&, pos](ui::Button *self)
+		b->setUpdateFunction([&, pos](ui::Button* self)
 		{
 			self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)pos.x, (int)pos.y)));
 
@@ -120,17 +148,17 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 			}
 		});
 
-		b->setClickFunction([&](ui::Button *self)
+		b->setClickFunction([&](ui::Button* self)
 		{
-			for (World &w : ctr.worlds)
+			for (World& w : ctr.worlds)
 			{
 				if (self->id == w.id)
 				{
-					ctr.state = State::Pause;
+					ctr.SetState(State::Pause);
 					ctr.level = w.index;
-					ctr.cWorld = &w;
+					ctr.cWorld =& w;
 
-					Reset(r, *ctr.cWorld);
+					Reset(r,* ctr.cWorld);
 
 					ctr.cWorld->timer.restart();
 				}
@@ -139,12 +167,95 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 
 		m_menu.AddButton(b);
 
-		pos.x += b->shape.getGlobalBounds().width * 1.1f + 5;
+		pos.x += b->shape.getGlobalBounds().width*  1.1f + 5;
 	}
 
 	/////////////////////////
 	// OPTIONS
 	/////////////////////////
+	// Sprites
+	sf::Texture* optionsBackgrowndText = new sf::Texture;
+	optionsBackgrowndText->loadFromFile("res/img/menu.png");
+
+	ui::Sprite* optionsBkgd = new ui::Sprite("optionsBkgd");
+	optionsBkgd->setTexture(*optionsBackgrowndText);
+	optionsBkgd->setOrigin(sf::Vector2f(optionsBkgd->getLocalBounds().width / 2.f, optionsBkgd->getLocalBounds().height / 2.f));
+
+	optionsBkgd->setUpdateFunction([&](ui::Sprite* self)
+	{
+		self->setScale(((float)window.getSize().x / (float)self->getTexture()->getSize().x) / 1.1f, ((float)window.getSize().y / (float)self->getTexture()->getSize().y) / 1.1f);
+
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
+	});
+	m_options.AddSprite(optionsBkgd);
+
+	// Buttons
+	ui::Button* backBut = new ui::Button("OptionsBack");
+	backBut->text.setFont(m_font);
+	backBut->text.setString("Back");
+	backBut->text.setCharacterSize(20);
+	backBut->shape.setSize(sf::Vector2f(backBut->text.getGlobalBounds().width + 20, 30));
+
+	backBut->setUpdateFunction([&](ui::Button* self)
+	{
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+	});
+
+	backBut->setClickFunction([&](ui::Button* self)
+	{
+		ctr.SetState(State::Menu);
+		ResetUi(window, r, ctr);
+	});
+	m_options.AddButton(backBut);
+
+	ui::Button* applyBut = new ui::Button("applyBut");
+	applyBut->text.setFont(m_font);
+	applyBut->text.setString("Apply");
+	applyBut->text.setCharacterSize(20);
+	applyBut->shape.setSize(sf::Vector2f(backBut->text.getGlobalBounds().width + 20, 30));
+
+	applyBut->setUpdateFunction([&](ui::Button* self)
+	{
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (self->shape.getSize().x * 1.1f) - 10, window.getSize().y - 40)));
+	});
+
+	applyBut->setClickFunction([&](ui::Button* self)
+	{
+		Apply(ctr);
+	});
+	m_options.AddButton(applyBut);
+
+	ui::Button* acceptBut = new ui::Button("acceptBut");
+	acceptBut->text.setFont(m_font);
+	acceptBut->text.setString("Accept");
+	acceptBut->text.setCharacterSize(20);
+	acceptBut->shape.setSize(sf::Vector2f(acceptBut->text.getGlobalBounds().width + 20, 30));
+
+	acceptBut->setUpdateFunction([&](ui::Button* self)
+	{
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options.GetButton("applyBut")->shape.getPosition()).x - (self->shape.getSize().x * 1.1f) - 10,
+																		window.getSize().y - 40)));
+	});
+
+	acceptBut->setClickFunction([&](ui::Button* self)
+	{
+		Apply(ctr);
+		ctr.SetState(State::Menu);
+		ResetUi(window, r, ctr);
+	});
+	m_options.AddButton(acceptBut);
+
+	// Texts
+	ui::Text* optionsTitle = new ui::Text("optionsTitle");
+	optionsTitle->setFont(m_font);
+	optionsTitle->setCharacterSize(50);
+	optionsTitle->setString("Options");
+	optionsTitle->setFillColor(sf::Color::Black);
+	optionsTitle->setUpdateFunction([&](ui::Text* self)
+	{
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(20, 20)));
+	});
+	m_options.AddText(optionsTitle);
 
 	/////////////////////////
 	// PAUSE
@@ -153,25 +264,25 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	sf::Texture* rewardsImg_t = new sf::Texture;
 	rewardsImg_t->loadFromFile("res/img/Pause.png");
 
-	ui::Sprite *rewardsImg = new ui::Sprite("rewards");
+	ui::Sprite* rewardsImg = new ui::Sprite("rewards");
 	rewardsImg->setTexture(*rewardsImg_t);
 	rewardsImg->setScale(0.7f, 0.7f);
 	rewardsImg->setOrigin(sf::Vector2f(rewardsImg->getLocalBounds().width / 2.f, rewardsImg->getLocalBounds().height / 2.f));
 
-	rewardsImg->setUpdateFunction([&](ui::Sprite *self)
+	rewardsImg->setUpdateFunction([&](ui::Sprite* self)
 	{
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - 70)));
 	});
 	m_pause.AddSprite(rewardsImg);
 
 	// Texts
-	ui::Text *levelTitleP = new ui::Text("levelTitleP");
+	ui::Text* levelTitleP = new ui::Text("levelTitleP");
 	levelTitleP->setFont(m_font);
 	levelTitleP->setCharacterSize(40);
 	levelTitleP->setOutlineThickness(1);
 	levelTitleP->setOutlineColor(sf::Color::Black);
 
-	levelTitleP->setUpdateFunction([&](ui::Text *self)
+	levelTitleP->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream lTitleText;
 		lTitleText << ctr.cWorld->id;
@@ -183,12 +294,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_pause.AddText(levelTitleP);
 
-	ui::Text *goldT = new ui::Text("goldT");
+	ui::Text* goldT = new ui::Text("goldT");
 	goldT->setFont(m_font);
 	goldT->setFillColor(sf::Color::Black);
 	goldT->setCharacterSize(22);
 
-	goldT->setUpdateFunction([&](ui::Text *self)
+	goldT->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream goldT_t;
 		goldT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.goldT << "s";
@@ -199,12 +310,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_pause.AddText(goldT);
 
-	ui::Text *silverT = new ui::Text("silverT");
+	ui::Text* silverT = new ui::Text("silverT");
 	silverT->setFont(m_font);
 	silverT->setFillColor(sf::Color::Black);
 	silverT->setCharacterSize(22);
 
-	silverT->setUpdateFunction([&](ui::Text *self)
+	silverT->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream silverT_t;
 		silverT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.silverT << "s";
@@ -215,12 +326,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_pause.AddText(silverT);
 
-	ui::Text *bronzeT = new ui::Text("bronzeT");
+	ui::Text* bronzeT = new ui::Text("bronzeT");
 	bronzeT->setFont(m_font);
 	bronzeT->setFillColor(sf::Color::Black);
 	bronzeT->setCharacterSize(22);
 
-	bronzeT->setUpdateFunction([&](ui::Text *self)
+	bronzeT->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream bronzeT_t;
 		bronzeT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.bronzeT << "s";
@@ -231,14 +342,14 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_pause.AddText(bronzeT);
 
-	ui::Text *recordT = new ui::Text("recordT");
+	ui::Text* recordT = new ui::Text("recordT");
 	recordT->setFont(m_font);
 	recordT->setFillColor(sf::Color::Black);
 	recordT->setOutlineThickness(1);
 	recordT->setOutlineColor(sf::Color::White);
 	recordT->setCharacterSize(20);
 
-	recordT->setUpdateFunction([&](ui::Text *self)
+	recordT->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream t_record;
 		if ((int)ctr.cWorld->record != NO_RECORD)
@@ -247,7 +358,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 		}
 		else
 		{
-			t_record << std::fixed << std::setprecision(3) << "Record:\n--.---";
+			t_record << "Record:\n--.---";
 		}
 
 		self->setString(t_record.str().c_str());
@@ -260,12 +371,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	// Playing
 	/////////////////
 	// Texts
-	ui::Text *currentT = new ui::Text("currentT");
+	ui::Text* currentT = new ui::Text("currentT");
 	currentT->setFont(m_font);
 	currentT->setOutlineThickness(2);
 	currentT->setOutlineColor(sf::Color::White);
 
-	currentT->setUpdateFunction([&](ui::Text *self)
+	currentT->setUpdateFunction([&](ui::Text* self)
 	{
 		if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		self->setFillColor({ 255, 200,   0 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	self->setFillColor({ 210, 210, 210 });
@@ -285,27 +396,27 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	// End
 	/////////////////
 	// Sprites
-	sf::Texture *winSpr_texture = new sf::Texture;
+	sf::Texture* winSpr_texture = new sf::Texture;
 	winSpr_texture->loadFromFile("res/img/winScreen.png");
 	
-	ui::Sprite *winSpr = new ui::Sprite("winSpr");
+	ui::Sprite* winSpr = new ui::Sprite("winSpr");
 	winSpr->setTexture(*winSpr_texture);
 	winSpr->setScale(0.5f, 0.5f);
 	winSpr->setOrigin(winSpr->getLocalBounds().width / 2.f, winSpr->getLocalBounds().height / 2.f);
 
-	winSpr->setUpdateFunction([&](ui::Sprite *self)
+	winSpr->setUpdateFunction([&](ui::Sprite* self)
 	{
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});
 	m_finish.AddSprite(winSpr);
 
 	// Texts
-	ui::Text *newRecordT = new ui::Text("newRecord");
+	ui::Text* newRecordT = new ui::Text("newRecord");
 	newRecordT->setFont(m_font);
 	newRecordT->setCharacterSize(30);
 	newRecordT->setFillColor(sf::Color::Black);
 
-	newRecordT->setUpdateFunction([&](ui::Text *self)
+	newRecordT->setUpdateFunction([&](ui::Text* self)
 	{
 		if (ctr.cWorld->currentT == ctr.cWorld->record)
 		{
@@ -321,13 +432,13 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_finish.AddText(newRecordT);
 
-	ui::Text *levelTitleF = new ui::Text("levelTitleF");
+	ui::Text* levelTitleF = new ui::Text("levelTitleF");
 	levelTitleF->setFont(m_font);
 	levelTitleF->setCharacterSize(40);
 	levelTitleF->setOutlineThickness(1);
 	levelTitleF->setOutlineColor(sf::Color::Black);
 
-	levelTitleF->setUpdateFunction([&](ui::Text *self)
+	levelTitleF->setUpdateFunction([&](ui::Text* self)
 	{
 		std::stringstream lTitleText;
 		lTitleText << ctr.cWorld->id;
@@ -339,12 +450,12 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	});
 	m_finish.AddText(levelTitleF);
 
-	ui::Text *finalT = new ui::Text("finalT");
+	ui::Text* finalT = new ui::Text("finalT");
 	finalT->setFont(m_font);
 	finalT->setOutlineThickness(1);
 	finalT->setOutlineColor(sf::Color::Black);
 
-	finalT->setUpdateFunction([&](ui::Text *self)
+	finalT->setUpdateFunction([&](ui::Text* self)
 	{
 		if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		self->setFillColor({ 255, 200,   0 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	self->setFillColor({ 210, 210, 210 });
@@ -363,65 +474,65 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	m_finish.AddText(finalT);
 
 	// BUTTONS
-	ui::Button *nextB = new ui::Button("nextB");
+	ui::Button* nextB = new ui::Button("nextB");
 	nextB->text.setFont(m_font);
 	nextB->text.setString("Next Level\n[SPACE]");
 	nextB->text.setCharacterSize(15);
 	nextB->shape.setSize(sf::Vector2f(100, 45));
 
-	nextB->setClickFunction([&](ui::Button *self)
+	nextB->setClickFunction([&](ui::Button* self)
 	{
 		if (ctr.worlds[ctr.level].NextLevel != "NULL")
 		{
-			ctr.state = State::Pause;
+			ctr.SetState(State::Pause);
 			ctr.level++;
-			ctr.cWorld = &ctr.worlds[ctr.level];
-			Reset(r, *ctr.cWorld);
+			ctr.cWorld =& ctr.worlds[ctr.level];
+			Reset(r,* ctr.cWorld);
 			ctr.cWorld->timer.restart();
 		}
 	});
 
-	nextB->setUpdateFunction([&](ui::Button *self)
+	nextB->setUpdateFunction([&](ui::Button* self)
 	{
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + 97, (window.getSize().y / 2) + 78)));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish.AddButton(nextB);
 
-	ui::Button *resetB = new ui::Button("resetB");
+	ui::Button* resetB = new ui::Button("resetB");
 	resetB->text.setFont(m_font);
 	resetB->text.setString("Restart\n[R]");
 	resetB->text.setCharacterSize(15);
 	resetB->shape.setSize(sf::Vector2f(100, 45));
 
-	resetB->setClickFunction([&](ui::Button *self)
+	resetB->setClickFunction([&](ui::Button* self)
 	{
-		ctr.state = State::Pause;
-		Reset(r, *ctr.cWorld);
+		ctr.SetState(State::Pause);
+		Reset(r,* ctr.cWorld);
 		ctr.cWorld->timer.restart();
 	});
 
-	resetB->setUpdateFunction([&](ui::Button *self)
+	resetB->setUpdateFunction([&](ui::Button* self)
 	{
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - 50, (window.getSize().y / 2) + 78)));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish.AddButton(resetB);
 
-	ui::Button *menuB = new ui::Button("menuB");
+	ui::Button* menuB = new ui::Button("menuB");
 	menuB->text.setFont(m_font);
 	menuB->text.setString("Menu\n[M]");
 	menuB->text.setCharacterSize(15);
 	menuB->shape.setSize(sf::Vector2f(100, 45));
 
-	menuB->setClickFunction([&](ui::Button *self)
+	menuB->setClickFunction([&](ui::Button* self)
 	{
-		ctr.state = State::Menu;
+		ctr.SetState(State::Menu);
 		Reset(r, *ctr.cWorld);
 		ResetUi(window, r, ctr);
 	});
 
-	menuB->setUpdateFunction([&](ui::Button *self)
+	menuB->setUpdateFunction([&](ui::Button* self)
 	{
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - 205, (window.getSize().y / 2) + 78)));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
@@ -429,7 +540,7 @@ void UserInterface::ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr
 	m_finish.AddButton(menuB);
 }
 
-void UserInterface::Update(const State &state, sf::RenderWindow &window)
+void UserInterface::Update(const State& state, sf::RenderWindow& window)
 {
 	switch (state)
 	{
@@ -455,7 +566,7 @@ void UserInterface::Update(const State &state, sf::RenderWindow &window)
 	}
 }
 
-void UserInterface::Draw(const State &state, sf::RenderWindow &window)
+void UserInterface::Draw(const State& state, sf::RenderWindow& window)
 {
 	switch (state)
 	{
@@ -481,29 +592,35 @@ void UserInterface::Draw(const State &state, sf::RenderWindow &window)
 	}
 }
 
-void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &window, const sf::Event &evt)
+void UserInterface::CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& window, const sf::Event& e)
 {
-	if (evt.type == sf::Event::KeyPressed)
+	if (e.type == sf::Event::KeyPressed)
 	{
-		switch (ctr.state)
+		switch (ctr.GetState())
 		{
 		case State::Menu:
-
+			if (e.key.code == sf::Keyboard::Q)
+			{
+				m_menu.GetSlider("audio")->SetValue(0.5f);
+			}
 			break;
 
 		case State::Options:
-
+			if (e.key.code == sf::Keyboard::Escape)
+			{
+				m_options.GetButton("OptionsBack")->getClickEvent()(m_options.GetButton("OptionsBack"));
+			}
 			break;
 
 		case State::Pause:
-			if (evt.key.code == sf::Keyboard::Up)
+			if (e.key.code == sf::Keyboard::Up)
 			{
-				ctr.state = State::Playing;
+				ctr.SetState(State::Playing);
 				ctr.cWorld->timer.restart();
 			}
-			if (evt.key.code == sf::Keyboard::M || evt.key.code == sf::Keyboard::Escape)
+			if (e.key.code == sf::Keyboard::M || e.key.code == sf::Keyboard::Escape)
 			{
-				ctr.state = State::Menu;
+				ctr.SetState(State::Menu);
 				ResetUi(window, r, ctr);
 			}
 			break;
@@ -513,17 +630,17 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 			break;
 
 		case State::End:
-			if (evt.key.code == sf::Keyboard::Space)
+			if (e.key.code == sf::Keyboard::Space)
 			{
 				m_finish.GetButton("nextB")->getClickEvent()(m_finish.GetButton("nextB"));
 				break;
 			}
-			if (evt.key.code == sf::Keyboard::R)
+			if (e.key.code == sf::Keyboard::R)
 			{
 				m_finish.GetButton("resetB")->getClickEvent()(m_finish.GetButton("resetB"));
 				break;
 			}
-			if (evt.key.code == sf::Keyboard::M)
+			if (e.key.code == sf::Keyboard::M)
 			{
 				m_finish.GetButton("menuB")->getClickEvent()(m_finish.GetButton("menuB"));
 				break;
@@ -532,33 +649,27 @@ void UserInterface::CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &win
 		}
 	}
 
-	if (evt.type == sf::Event::MouseButtonPressed)
+	switch (ctr.GetState())
 	{
-		if (evt.key.code == sf::Mouse::Left)
-		{
-			switch (ctr.state)
-			{
-			case State::Menu:
-				m_menu.CheckInput(window);
-				break;
+	case State::Menu:
+		m_menu.CheckInput(window, e);
+		break;
 
-			case State::Options:
-				m_options.CheckInput(window);
-				break;
+	case State::Options:
+		m_options.CheckInput(window, e);
+		break;
 
-			case State::Pause:
-				m_pause.CheckInput(window);
-				break;
+	case State::Pause:
+		m_pause.CheckInput(window, e);
+		break;
 
-			case State::Playing:
-				m_play.CheckInput(window);
-				break;
+	case State::Playing:
+		m_play.CheckInput(window, e);
+		break;
 
-			case State::End:
-				m_finish.CheckInput(window);
-				break;
-			}
-		}
+	case State::End:
+		m_finish.CheckInput(window, e);
+		break;
 	}
 }
 

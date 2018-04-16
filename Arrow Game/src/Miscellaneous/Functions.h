@@ -5,15 +5,20 @@
 #include "..\Game\Controller.h"
 #include "..\Game\Rocket.h"
 
-void Reset(Rocket &r, World &world);
+// Replace the roket in position
+void Reset(Rocket& r, World& world);
 
-int bToh(const int &val);
+// Byte to 100
+int bToh(const int& val);
+
+// Map functions
+float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax);
 
 // Write to a.able file all the stats for all levels
-void WriteFile(std::vector<World> &worlds);
+void WriteFile(std::vector<World>& worlds);
 
 // Generate all the wolds and add them to an array
-void GenerateWorld(std::vector<World> &worlds);
+void GenerateWorld(std::vector<World>& worlds);
 
 // Generate a world from a file
-void ReadFile(std::string path, World &world);
+void ReadFile(std::string path, World& world);

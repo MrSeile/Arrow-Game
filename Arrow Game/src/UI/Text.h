@@ -1,27 +1,28 @@
 #pragma once
 
 #include "..\Global.h"
+#include "Drawable.h"
 
 namespace ui
 {
 
-	class Text : public sf::Text
+	class Text : public sf::Text, public Drawable
 	{
 	private:
-		std::function<void(Text *self)> m_updateFunction;
+		std::function<void(Text* self)> m_updateFunction;
 
 		bool m_hasCustomUpdateFunction = false;
 
 	public:
 		// Constructor
-		Text(const std::string &id);
+		Text(const std::string& id);
 
 		// Generals
-		void Update(const sf::RenderWindow &window);
-		void Draw(sf::RenderWindow &window);
+		void Update(const sf::RenderWindow& window);
+		void Draw(sf::RenderWindow& window);
 
 		// Set
-		void setUpdateFunction(const std::function<void(Text *self)> &function);
+		void setUpdateFunction(const std::function<void(Text* self)>& function);
 
 		// Variables
 		const std::string id;

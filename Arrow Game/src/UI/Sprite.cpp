@@ -1,12 +1,12 @@
 #include "Sprite.h"
 
-ui::Sprite::Sprite(const std::string &id)
+ui::Sprite::Sprite(const std::string& id)
 	: id(id)
 {
 
 }
 
-void ui::Sprite::Update(const sf::RenderWindow &window)
+void ui::Sprite::Update(const sf::RenderWindow& window)
 {
 	if (m_hasCustomUpdateFunction)
 	{
@@ -14,13 +14,13 @@ void ui::Sprite::Update(const sf::RenderWindow &window)
 	}
 }
 
-void ui::Sprite::setUpdateFunction(const std::function<void(ui::Sprite *self)> &function)
+void ui::Sprite::setUpdateFunction(const std::function<void(ui::Sprite* self)>& function)
 {
 	m_hasCustomUpdateFunction = true;
 	m_updateFunction = function;
 }
 
-void ui::Sprite::Draw(sf::RenderWindow &window)
+void ui::Sprite::Draw(sf::RenderWindow& window)
 {
 	window.draw(*this);
 }

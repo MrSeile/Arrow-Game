@@ -1,7 +1,7 @@
 #include "Functions.h"
 
 // Set the player to the start
-void Reset(Rocket &r, World &world)
+void Reset(Rocket& r, World& world)
 {
 	world.levelImg.loadFromFile(world.ImgPath);
 	world.levelTex.loadFromFile(world.ImgPath);
@@ -13,16 +13,20 @@ void Reset(Rocket &r, World &world)
 	r.drawable.setRotation(world.rotation);
 }
 
-int bToh(const int &val)
+int bToh(const int& val)
 {
-	return (val / 255) * 100;
+	return (val / 255)*  100;
 }
 
+float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax)
+{
+	return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (value - inputMin);
+}
 
 // Write to a.able file all the stats for all levels
-void WriteFile(std::vector<World> &worlds)
+void WriteFile(std::vector<World>& worlds)
 {
-	for (World &w : worlds)
+	for (World& w : worlds)
 	{
 		std::ofstream ableFile;
 		ableFile.open("res/" + w.AblePath, std::ofstream::out | std::ofstream::trunc);
@@ -31,15 +35,15 @@ void WriteFile(std::vector<World> &worlds)
 		int random = rand();
 
 		ableFile << std::fixed << random << std::endl;
-		ableFile << std::fixed << (w.able + 1) * (random * random) << std::endl;
-		ableFile << std::fixed << (w.completed + 1) * (random * random) << std::endl;
+		ableFile << std::fixed << (w.able + 1)*  (random*  random) << std::endl;
+		ableFile << std::fixed << (w.completed + 1)*  (random*  random) << std::endl;
 		if (w.record == NO_RECORD)
 		{
 			ableFile << "NO_RECORD" << std::endl;
 		}
 		else
 		{
-			ableFile << std::fixed << (w.record + 1) * (random * random) << std::endl;
+			ableFile << std::fixed << (w.record + 1)*  (random*  random) << std::endl;
 		}
 
 		ableFile.close();
@@ -47,7 +51,7 @@ void WriteFile(std::vector<World> &worlds)
 }
 
 // Generate all the wolds and add them to an array
-void GenerateWorld(std::vector<World> &worlds)
+void GenerateWorld(std::vector<World>& worlds)
 {
 	int index = 0;
 
@@ -81,7 +85,7 @@ void GenerateWorld(std::vector<World> &worlds)
 }
 
 // Generate a world from a file
-void ReadFile(std::string path, World &world)
+void ReadFile(std::string path, World& world)
 {
 	// Input type enumeration
 	enum class Type
@@ -99,11 +103,11 @@ void ReadFile(std::string path, World &world)
 	} m_type = Type::Null;
 
 	// Set the world colors to the default
-	world.roadColor = sf::Color(255, 255, 255);
-	world.obstacleColor = sf::Color(50, 50, 50);
-	world.goalColor = sf::Color(0, 255, 0);
+	world.roadColor =		sf::Color(255, 255, 255);
+	world.obstacleColor =	sf::Color(50, 50, 50);
+	world.goalColor =		sf::Color(0, 255, 0);
 	world.backgrowndColor = sf::Color(50, 50, 50);
-	world.rocketColor = sf::Color(0, 0, 0);
+	world.rocketColor =		sf::Color(0, 0, 0);
 
 	// Current line
 	int line = 0;
@@ -356,11 +360,11 @@ void ReadFile(std::string path, World &world)
 			break;
 
 		case 2:
-			world.able = (std::stoi(val) / (code * code)) - 1 == 1 ? true : false;
+			world.able = (std::stoi(val) / (code*  code)) - 1 == 1 ? true : false;
 			break;
 
 		case 3:
-			world.completed = (int)(std::stoi(val) / (code * code)) - 1;
+			world.completed = (int)(std::stoi(val) / (code*  code)) - 1;
 			break;
 
 		case 4:
@@ -370,7 +374,7 @@ void ReadFile(std::string path, World &world)
 			}
 			else
 			{
-				world.record = (float)(std::stof(val) / (code * code)) - 1;
+				world.record = (float)(std::stof(val) / (code*  code)) - 1;
 			}
 			break;
 		}

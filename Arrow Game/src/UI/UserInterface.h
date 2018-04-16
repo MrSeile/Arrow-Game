@@ -17,12 +17,14 @@ private:
 	
 	sf::Font m_font;
 
-public:
-	UserInterface(sf::RenderWindow &window, Rocket &r, Controller &ctr);
+	void Apply(Controller& ctr);
 
-	void Update(const State &state, sf::RenderWindow &window);
-	void Draw(const State &state, sf::RenderWindow &window);
-	void CheckInput(Controller &ctr, Rocket &r, sf::RenderWindow &window, const sf::Event &evt);
+public:
+	UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr);
+
+	void Update(const State& state, sf::RenderWindow& window);
+	void Draw(const State& state, sf::RenderWindow& window);
+	void CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& window, const sf::Event& e);
 
 	Widget& GetMenuWidget();
 	Widget& GetOptionsWidget();
@@ -30,6 +32,6 @@ public:
 	Widget& GetPlayWidget();
 	Widget& GetFinishWidget();
 	
-	void ResetUi(sf::RenderWindow &window, Rocket &r, Controller &ctr);
+	void ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr);
 };
 

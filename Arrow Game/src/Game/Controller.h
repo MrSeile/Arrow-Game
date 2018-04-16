@@ -1,16 +1,22 @@
 #pragma once
 
 #include "..\Global.h"
-#include "..\Game\World.h"
+#include "World.h"
+#include "Rocket.h"
+#include "Settings.h"
 
 // Controller class
 class Controller
 {
+private:
+	// State variable
+	State m_state;
+
 public:
 	Controller();
 
-	// State variable
-	State state;
+	// Settings
+	Settings settings;
 
 	// Array where are all the worlds
 	std::vector<World> worlds;
@@ -19,5 +25,8 @@ public:
 	int level;
 
 	// Current world
-	World *cWorld = new World;
+	World* cWorld = new World;
+
+	void SetState(const State& newState);
+	const State& GetState();
 };

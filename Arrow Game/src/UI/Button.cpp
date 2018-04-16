@@ -1,6 +1,6 @@
 #include "Button.h"
 
-ui::Button::Button(const std::string &id)
+ui::Button::Button(const std::string& id)
 	: id(id)
 {
 	text.setFillColor(sf::Color::Black);
@@ -10,15 +10,21 @@ ui::Button::Button(const std::string &id)
 	shape.setOutlineColor(sf::Color::Black);
 }
 
-void ui::Button::CheckClick(const sf::RenderWindow &window)
+void ui::Button::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 {
-	if (shape.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))) && m_able)
+	if (e.type == sf::Event::MouseButtonPressed)
 	{
-		m_clickFunction(this);
+		if (e.key.code == sf::Mouse::Left)
+		{
+			if (shape.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))) && m_able && m_hasClickFuncion)
+			{
+				m_clickFunction(this);
+			}
+		}
 	}
 }
 
-void ui::Button::Update(const sf::RenderWindow &window)
+void ui::Button::Update(const sf::RenderWindow& window)
 {
 	text.setPosition(	shape.getPosition().x + (shape.getGlobalBounds().width  / 2.f) - (text.getGlobalBounds().width  / 2.f),
 						shape.getPosition().y + (shape.getGlobalBounds().height / 2.f) - (text.getGlobalBounds().height / 1.f));
@@ -29,13 +35,14 @@ void ui::Button::Update(const sf::RenderWindow &window)
 	}
 }
 
-ui::Button* ui::Button::setClickFunction(const std::function<void(Button *self)> &function)
+ui::Button* ui::Button::setClickFunction(const std::function<void(Button* self)>& function)
 {
+	m_hasClickFuncion = true;
 	m_clickFunction = function;
 	return this;
 }
 
-ui::Button* ui::Button::setUpdateFunction(const std::function<void(Button* self)> &function)
+ui::Button* ui::Button::setUpdateFunction(const std::function<void(Button* self)>& function)
 {
 	m_hasCustomUpdateFunction = true;
 	m_updateFunction = function;
@@ -47,7 +54,7 @@ bool ui::Button::getAble()
 	return m_able;
 }
 
-ui::Button* ui::Button::setAble(const bool &able)
+ui::Button* ui::Button::setAble(const bool& able)
 {
 	m_able = able;
 	text.setFillColor(able ? sf::Color(0, 0, 0) : sf::Color(200, 200, 200));
@@ -59,17 +66,17 @@ sf::Vector2f ui::Button::getPosition()
 	return shape.getPosition();
 }
 
-std::function<void(ui::Button *self)> ui::Button::getClickEvent()
+std::function<void(ui::Button* self)> ui::Button::getClickEvent()
 {
 	return m_clickFunction;
 }
 
-std::function<void(ui::Button *self)> ui::Button::getUpdateFunction()
+std::function<void(ui::Button* self)> ui::Button::getUpdateFunction()
 {
 	return m_updateFunction;
 }
 
-void ui::Button::Draw(sf::RenderWindow &window)
+void ui::Button::Draw(sf::RenderWindow& window)
 {
 	window.draw(shape);
 	window.draw(text);
