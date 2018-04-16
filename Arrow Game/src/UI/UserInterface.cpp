@@ -28,6 +28,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 {
 	// Clear everything
 	m_menu.Clear();
+	m_options.Clear();
 	m_pause.Clear();
 	m_play.Clear();
 	m_finish.Clear();
@@ -66,7 +67,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	title->setUpdateFunction([&](ui::Text* self)
 	{
-		self->setString(std::to_string(m_options.GetSlider("audio")->GetValue()));
+		self->setString(std::to_string(ctr.settings.GetAudioLevel()));
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 80), (int)(window.getSize().y - self->getGlobalBounds().height*  1.5f - 10))));
 	});
 	m_menu.AddText(title);
@@ -203,8 +204,8 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	backBut->setClickFunction([&](ui::Button* self)
 	{
-		ctr.SetState(State::Menu);
 		ResetUi(window, r, ctr);
+		ctr.SetState(State::Menu);
 	});
 	m_options.AddButton(backBut);
 
