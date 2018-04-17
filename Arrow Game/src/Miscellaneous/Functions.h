@@ -11,6 +11,9 @@ void Reset(Rocket& r, World& world);
 // Byte to 100
 int bToh(const int& val);
 
+// Load settings
+void LoadSettings(Settings& settings);
+
 // Map functions
 float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax);
 

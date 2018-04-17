@@ -55,6 +55,7 @@ void GenerateWorld(std::vector<World>& worlds)
 {
 	int index = 0;
 
+	// Temp
 	World w;
 
 	std::ifstream settings;
@@ -81,6 +82,55 @@ void GenerateWorld(std::vector<World>& worlds)
 			worlds.push_back(w);
 			break;
 		}
+	}
+}
+
+// Load settings
+void LoadSettings(Settings& settings)
+{
+	enum Type
+	{
+		AntiAliasing = 0,
+		FullScreen = 1,
+		Lightning = 2,
+		AudioLevel = 3
+	};
+
+	std::fstream file;
+	file.open("data/settings.stg");
+
+	int line = 0;
+	std::string val;
+	while (file >> val)
+	{
+		switch (line)
+		{
+		case Type::AntiAliasing:
+		{
+			//settings.SetAntialiasingLevel((uint)std::stoi(val));
+		}
+		case Type::FullScreen:
+		{
+			//settings.SetFullscreen(std::stoi(val));
+		}
+		case Type::Lightning:
+		{
+			if (std::stoi(val) == 0)
+			{
+				//settings.DisableLightning();
+			}
+			else
+			{
+				//settings.EnableLightning();
+			}
+		}
+		case Type::AudioLevel:
+		{
+			settings.SetAudioLevel(std::stof(val));
+		}
+		}
+
+		line++;
 	}
 }
 

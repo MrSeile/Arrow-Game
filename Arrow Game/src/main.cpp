@@ -10,8 +10,6 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-#pragma comment(lib, "LogitechLEDLib.lib")
-
 
 #include "Global.h"
 #include "Miscellaneous\Functions.h"
@@ -23,7 +21,6 @@ int main()
 {
 	// Create controller
 	Controller ctr;
-	ctr.settings.SetAudioLevel(0.3);
 
 	// Generate the window
 	sf::RenderWindow window(sf::VideoMode((unsigned int)1280, (unsigned int)680), "Arrow Game", sf::Style::Default);
@@ -35,6 +32,9 @@ int main()
 
 	// Rocket "Player"
 	Rocket r;
+
+	// Load the settings from file
+	LoadSettings(ctr.settings);
 
 	// Create the ctr.worlds
 	GenerateWorld(ctr.worlds);

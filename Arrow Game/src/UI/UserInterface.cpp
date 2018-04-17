@@ -129,7 +129,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
 		b->setAble(w.able);
 
-		if (pos.x + b->shape.getGlobalBounds().width*  1.1 >= window.getSize().x)
+		if (pos.x + b->shape.getGlobalBounds().width * 1.1 >= window.getSize().x)
 		{
 			pos.y += 40;
 			pos.x = 10;
@@ -217,7 +217,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	applyBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (self->shape.getSize().x * 1.1f) - 10, window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x * 1.1f) - 10, window.getSize().y - 40)));
 	});
 
 	applyBut->setClickFunction([&](ui::Button* self)
@@ -234,7 +234,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	acceptBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options.GetButton("applyBut")->shape.getPosition()).x - (self->shape.getSize().x * 1.1f) - 10,
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options.GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x * 1.1f) - 10,
 																		window.getSize().y - 40)));
 	});
 
@@ -488,7 +488,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 			ctr.SetState(State::Pause);
 			ctr.level++;
 			ctr.cWorld =& ctr.worlds[ctr.level];
-			Reset(r,* ctr.cWorld);
+			Reset(r, *ctr.cWorld);
 			ctr.cWorld->timer.restart();
 		}
 	});
@@ -509,7 +509,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	resetB->setClickFunction([&](ui::Button* self)
 	{
 		ctr.SetState(State::Pause);
-		Reset(r,* ctr.cWorld);
+		Reset(r, *ctr.cWorld);
 		ctr.cWorld->timer.restart();
 	});
 
