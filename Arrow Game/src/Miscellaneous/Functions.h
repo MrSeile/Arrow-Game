@@ -18,7 +18,7 @@ void LoadSettings(Settings& settings);
 float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax);
 
 // Write to a.able file all the stats for all levels
-void WriteFile(std::vector<World>& worlds);
+void WriteFile(Controller& ctr);
 
 // Generate all the wolds and add them to an array
 void GenerateWorld(std::vector<World>& worlds);

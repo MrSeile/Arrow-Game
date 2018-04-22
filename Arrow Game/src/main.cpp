@@ -10,7 +10,6 @@
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
-
 #include "Global.h"
 #include "Miscellaneous\Functions.h"
 #include "Game\Rocket.h"
@@ -22,22 +21,22 @@ int main()
 	// Create controller
 	Controller ctr;
 
-	// Generate the window
-	sf::RenderWindow window(sf::VideoMode((unsigned int)1280, (unsigned int)680), "Arrow Game", sf::Style::Default);
+	// Load the settings from file
+	LoadSettings(ctr.settings);
+
+	// Rocket "Player"
+	Rocket r;
+
+	// Create the ctr.worlds
+	GenerateWorld(ctr.worlds);
+
+	// Create the window
+	sf::RenderWindow window(sf::VideoMode((unsigned int)1280, (unsigned int)680), "Arrow Game", sf::Style::Default, ctr.settings.GetContextSettings());
 	window.setFramerateLimit(60);
 
 	// "Camera"
 	sf::View view;
 	window.setView(view);
-
-	// Rocket "Player"
-	Rocket r;
-
-	// Load the settings from file
-	LoadSettings(ctr.settings);
-
-	// Create the ctr.worlds
-	GenerateWorld(ctr.worlds);
 
 	// Generate the user interface	
 	UserInterface UI(window, r, ctr);
@@ -50,36 +49,56 @@ int main()
 
 		while (window.isOpen())
 		{
-			switch (ctr.GetState())
+			bool pressed = false;
+
+			if (ctr.GetState() == State::Options)
 			{
-			case State::Menu:
-			{
-				LogiLedSetLighting(100, 100, 100);
-				break;
+				for (ui::Slider* s : UI.GetOptionsWidget()->m_sliders)
+				{
+					if (s->IsPressed())
+					{
+						pressed = true;
+
+						float value = s->GetValue() * 100.f;
+
+						LogiLedSetLighting(value, value, value);
+					}
+				}
 			}
-			case State::Options:
+
+			if (!pressed)
 			{
-				LogiLedSetLighting(100, 100, 100);
-				break;
-			}
-			case State::Pause:
-			{
-				LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
-				break;
-			}
-			case State::Playing:
-			{
-				LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
-				break;
-			}
-			case State::End:
-			{
-				if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		LogiLedSetLighting(100, 78, 0);
-				else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting(82, 82, 82);
-				else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting(65, 44, 39);
-				else														LogiLedSetLighting(100, 100, 100);
-				break;
-			}
+				switch (ctr.GetState())
+				{
+				case State::Menu:
+				{
+					LogiLedSetLighting(100, 100, 100);
+					break;
+				}
+				case State::Options:
+				{
+					LogiLedSetLighting(100, 100, 100);
+					break;
+				}
+				case State::Pause:
+				{
+					LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
+					break;
+				}
+				case State::Playing:
+				{
+					LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
+					break;
+				}
+				case State::End:
+				{
+					if (ctr.cWorld->currentT < ctr.cWorld->time.goldT)		LogiLedSetLighting(100, 78, 0);
+					else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting(82, 82, 82);
+					else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting(65, 44, 39);
+					else														LogiLedSetLighting(100, 100, 100);
+					break;
+				}
+				}
 			}
 		}
 	});
@@ -99,7 +118,7 @@ int main()
 				ligthing.detach();
 				LogiLedShutdown();
 
-				WriteFile(ctr.worlds);
+				WriteFile(ctr);
 
 				window.close();
 			}

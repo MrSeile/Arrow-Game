@@ -5,6 +5,10 @@ Widget::Widget()
 
 }
 
+Widget::~Widget()
+{
+}
+
 // Add objects
 ui::Sprite* Widget::AddSprite(ui::Sprite* newSprite)
 {

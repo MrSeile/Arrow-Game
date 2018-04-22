@@ -12,6 +12,7 @@ private:
 
 public:
 	Widget();
+	~Widget();
 
 	std::vector<ui::Button*> m_buttons;
 	std::vector<ui::Text*> m_texts;

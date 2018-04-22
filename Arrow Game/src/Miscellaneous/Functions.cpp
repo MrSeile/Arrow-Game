@@ -1,5 +1,16 @@
 #include "Functions.h"
 
+namespace Options
+{
+	enum Type
+	{
+		AntiAliasing = 0,
+		FullScreen = 1,
+		Lightning = 2,
+		AudioLevel = 3
+	};
+}
+
 // Set the player to the start
 void Reset(Rocket& r, World& world)
 {
@@ -24,9 +35,42 @@ float map(const float& value, const float& inputMin, const float& inputMax, cons
 }
 
 // Write to a.able file all the stats for all levels
-void WriteFile(std::vector<World>& worlds)
+void WriteFile(Controller& ctr)
 {
-	for (World& w : worlds)
+	using namespace Options;
+
+	std::fstream settingsFile;
+	settingsFile.open("data/settings.stg", std::fstream::out | std::fstream::trunc);
+
+	for (uint i = 0; i < 1000; i++)
+	{
+		switch (i)
+		{
+		case Type::AntiAliasing:
+		{
+			settingsFile << ctr.settings.GetAntialiasingLevel() << "\n";
+			break;
+		}
+		case Type::FullScreen:
+		{
+			settingsFile << ctr.settings.GetFullscreen() << "\n";
+			break;
+		}
+		case Type::Lightning:
+		{
+			settingsFile << ctr.settings.GetLigthing() << "\n";
+			break;
+		}
+		case Type::AudioLevel:
+		{
+			settingsFile << ctr.settings.GetAudioLevel() << "\n";
+			break;
+		}
+		}
+	}
+
+
+	for (World& w : ctr.worlds)
 	{
 		std::ofstream ableFile;
 		ableFile.open("res/" + w.AblePath, std::ofstream::out | std::ofstream::trunc);
@@ -88,13 +132,7 @@ void GenerateWorld(std::vector<World>& worlds)
 // Load settings
 void LoadSettings(Settings& settings)
 {
-	enum Type
-	{
-		AntiAliasing = 0,
-		FullScreen = 1,
-		Lightning = 2,
-		AudioLevel = 3
-	};
+	using namespace Options;
 
 	std::fstream file;
 	file.open("data/settings.stg");
@@ -107,31 +145,37 @@ void LoadSettings(Settings& settings)
 		{
 		case Type::AntiAliasing:
 		{
-			//settings.SetAntialiasingLevel((uint)std::stoi(val));
+			settings.SetAntialiasingLevel((uint)std::stoi(val));
+			break;
 		}
 		case Type::FullScreen:
 		{
-			//settings.SetFullscreen(std::stoi(val));
+			settings.SetFullscreen(std::stoi(val));
+			break;
 		}
 		case Type::Lightning:
 		{
 			if (std::stoi(val) == 0)
 			{
-				//settings.DisableLightning();
+				settings.DisableLightning();
 			}
 			else
 			{
-				//settings.EnableLightning();
+				settings.EnableLightning();
 			}
+			break;
 		}
 		case Type::AudioLevel:
 		{
 			settings.SetAudioLevel(std::stof(val));
+			break;
 		}
 		}
 
 		line++;
 	}
+
+	file.close();
 }
 
 // Generate a world from a file

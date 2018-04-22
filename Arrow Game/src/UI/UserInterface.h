@@ -9,11 +9,11 @@
 class UserInterface
 {
 private:
-	Widget m_menu;
-	Widget m_options;
-	Widget m_pause;
-	Widget m_play;
-	Widget m_finish;
+	Widget* m_menu;
+	Widget* m_options;
+	Widget* m_pause;
+	Widget* m_play;
+	Widget* m_finish;
 	
 	sf::Font m_font;
 
@@ -26,11 +26,11 @@ public:
 	void Draw(const State& state, sf::RenderWindow& window);
 	void CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& window, const sf::Event& e);
 
-	Widget& GetMenuWidget();
-	Widget& GetOptionsWidget();
-	Widget& GetPauseWidget();
-	Widget& GetPlayWidget();
-	Widget& GetFinishWidget();
+	Widget* GetMenuWidget();
+	Widget* GetOptionsWidget();
+	Widget* GetPauseWidget();
+	Widget* GetPlayWidget();
+	Widget* GetFinishWidget();
 	
 	void ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr);
 };

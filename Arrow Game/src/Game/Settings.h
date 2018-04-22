@@ -4,7 +4,6 @@
 class Settings
 {
 private:
-	uint m_antialiasingLevel;
 	bool m_fullScreen;
 	float m_audioLevel;
 	bool m_lightning;
@@ -27,5 +26,6 @@ public:
 	const bool& GetFullscreen();
 	const float& GetAudioLevel();
 	const bool& GetLigthing();
+	const sf::ContextSettings& GetContextSettings();
 };
 
