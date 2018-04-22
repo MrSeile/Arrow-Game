@@ -43,15 +43,15 @@ void ui::Slider::Update(const sf::RenderWindow& window)
 {
 	if (m_pressed)
 	{
-		m_value = (sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_body.getPosition()).x - m_offset) / 1.1f;
+		m_value = map((sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_body.getPosition()).x - m_offset) / 1.1f, 0.f, m_body.getSize().x - m_slider.getSize().x, 0.f, 1.f);
 		
 		if (m_value < 0)
 		{
 			m_value = 0;
 		}
-		else if (m_value > (m_body.getSize().x / 1.f) - m_slider.getSize().x)
+		else if (map(m_value, 0.f, 1.f, 0.f, m_body.getSize().x - m_slider.getSize().x) > (m_body.getSize().x / 1.f) - m_slider.getSize().x)
 		{
-			m_value = map((m_body.getSize().x / 1.f) - m_slider.getSize().x, 0.f, 1.f, 2);
+			m_value = 1;
 		}
 	}
 
@@ -60,6 +60,7 @@ void ui::Slider::Update(const sf::RenderWindow& window)
 		m_updateFunction(this);
 	}
 
+	m_slider.setSize(sf::Vector2f(m_slider.getSize().x, m_body.getSize().y));
 	m_slider.setPosition(m_body.getPosition().x + map(m_value, 0.f, 1.f, 0.f, m_body.getSize().x - m_slider.getSize().x), m_body.getPosition().y);
 }
 

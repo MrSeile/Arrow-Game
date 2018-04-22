@@ -182,9 +182,21 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	audioSlider->setUpdateFunction([&](ui::Slider* self)
 	{
+		self->SetSize(m_options->GetSlider("test")->GetValue() * 600, 20);
 		self->SetPosition(window.mapPixelToCoords(sf::Vector2i(100, 100)));
 	});
 	m_options->AddSlider(audioSlider);
+
+
+	ui::Slider* testSlider = new ui::Slider("test", m_font);
+	testSlider->SetValue(0.5f);
+	testSlider->SetSize(200, 10);
+
+	testSlider->setUpdateFunction([&](ui::Slider* self)
+	{
+		self->SetPosition(window.mapPixelToCoords(sf::Vector2i(100, 200)));
+	});
+	m_options->AddSlider(testSlider);
 
 
 	// Sprites
