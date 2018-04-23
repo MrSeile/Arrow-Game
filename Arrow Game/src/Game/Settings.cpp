@@ -48,7 +48,7 @@ const uint& Settings::GetAntialiasingLevel()
 	return contextSettings.antialiasingLevel;
 }
 
-const bool & Settings::GetFullscreen()
+const bool& Settings::GetFullscreen()
 {
 	return m_fullScreen;
 }
@@ -58,12 +58,12 @@ const float& Settings::GetAudioLevel()
 	return m_audioLevel;
 }
 
-const bool & Settings::GetLigthing()
+const bool& Settings::GetLigthing()
 {
 	return m_lightning;
 }
 
-const sf::ContextSettings & Settings::GetContextSettings()
+const sf::ContextSettings& Settings::GetContextSettings()
 {
 	return contextSettings;
 }
