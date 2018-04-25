@@ -42,7 +42,7 @@ int main()
 	UserInterface UI(window, r, ctr);
 
 
-	// Ligthing
+	/*// Ligthing
 	std::thread ligthing([&]
 	{
 		LogiLedInit();
@@ -101,7 +101,7 @@ int main()
 				}
 			}
 		}
-	});
+	});*/
 
 
 	// Main loop
@@ -115,7 +115,7 @@ int main()
 
 			if (e.type == sf::Event::Closed)
 			{
-				ligthing.detach();
+				//ligthing.detach();
 				LogiLedShutdown();
 
 				WriteFile(ctr);

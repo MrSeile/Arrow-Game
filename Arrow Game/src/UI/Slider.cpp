@@ -11,10 +11,10 @@ ui::Slider::Slider(const std::string& id, const sf::Font& font)
 	m_slider.setSize(sf::Vector2f(10, 20));
 
 	m_text.setFont(font);
-	m_text.setFillColor(sf::Color::White);
-	m_text.setOutlineColor(sf::Color::Black);
-	m_text.setOutlineThickness(1);
-	m_text.setCharacterSize(20);
+	m_text.setFillColor(sf::Color::Black);
+	//m_text.setOutlineThickness(1);
+	//m_text.setOutlineColor(sf::Color::Black);
+	m_text.setStyle(sf::Text::Bold);
 }
 
 void ui::Slider::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
@@ -26,7 +26,7 @@ void ui::Slider::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 			if (m_slider.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window))))
 			{
 				m_pressed = true;
-				m_offset = float(sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_slider.getPosition()).x);
+				m_offset = (float)(sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_slider.getPosition()).x);
 			}
 		}
 	}
@@ -59,6 +59,12 @@ void ui::Slider::Update(const sf::RenderWindow& window)
 	{
 		m_updateFunction(this);
 	}
+
+	m_text.setCharacterSize((uint)(m_body.getSize().y + m_body.getSize().y * 0.3f));
+	std::stringstream text;
+	text << std::fixed << std::setprecision(3) << m_value;
+	m_text.setString(text.str());
+	m_text.setPosition((sf::Vector2f(m_body.getPosition().x + m_body.getSize().x + 10, m_body.getPosition().y - m_body.getSize().y * 0.3f)));
 
 	m_slider.setSize(sf::Vector2f(m_slider.getSize().x, m_body.getSize().y));
 	m_slider.setPosition(m_body.getPosition().x + map(m_value, 0.f, 1.f, 0.f, m_body.getSize().x - m_slider.getSize().x), m_body.getPosition().y);

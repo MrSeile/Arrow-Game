@@ -89,6 +89,7 @@ void Widget::Clear()
 	m_buttons.clear();
 	m_texts.clear();
 	m_sprites.clear();
+	m_sliders.clear();
 }
 
 void Widget::Draw(sf::RenderWindow& window)

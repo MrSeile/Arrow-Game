@@ -91,33 +91,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	});
 	m_menu->AddButton(optionsBut);
 
-	/*ui::Button* resB = new ui::Button("Reset");
-	resB->text.setFont(m_font);
-	resB->text.setString("Reset progress");
-	resB->text.setCharacterSize(20);
-	resB->shape.setSize(sf::Vector2f(resB->text.getGlobalBounds().width + 20, 30));
-
-	resB->setUpdateFunction([&](ui::Button* self)
-	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
-	});
-
-	resB->setClickFunction([&](ui::Button* self)
-	{
-		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
-		{
-			for (World& w : ctr.worlds)
-			{
-				w.able = w.index != 0 ? false : true;
-				w.completed = 0;
-				w.record = NO_RECORD;
-			}
-
-			ResetUi(window, r, ctr);
-		}
-	});
-	m_menu->AddButton(resB);*/
-
 
 	sf::Vector2f pos(10, 10);
 
@@ -175,28 +148,33 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	/////////////////////////
 	// OPTIONS
 	/////////////////////////
+	// Texts
+	ui::Text* audioText = new ui::Text("audioText");
+	audioText->setFont(m_font);
+	audioText->setCharacterSize(40);
+	audioText->setFillColor(sf::Color::Black);
+	audioText->setString("Audio");
+	audioText->setUpdateFunction([&](sf::Text* self)
+	{
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(50, 100)));
+	});
+	
+	m_options->AddText(audioText);
+
 	// Sliders
 	ui::Slider* audioSlider = new ui::Slider("audio", m_font);
 	audioSlider->SetValue(ctr.settings.GetAudioLevel());
 	audioSlider->SetSize(200, 10);
+	audioSlider->ShowValue();
 
 	audioSlider->setUpdateFunction([&](ui::Slider* self)
 	{
-		self->SetSize(m_options->GetSlider("test")->GetValue() * 600, 20);
-		self->SetPosition(window.mapPixelToCoords(sf::Vector2i(100, 100)));
+		ui::Text* audio = m_options->GetText("audioText");
+
+		self->SetSize(300.f, 20.f);
+		self->SetPosition(audio->getPosition().x + 50, audio->getPosition().y + 60);
 	});
 	m_options->AddSlider(audioSlider);
-
-
-	ui::Slider* testSlider = new ui::Slider("test", m_font);
-	testSlider->SetValue(0.5f);
-	testSlider->SetSize(200, 10);
-
-	testSlider->setUpdateFunction([&](ui::Slider* self)
-	{
-		self->SetPosition(window.mapPixelToCoords(sf::Vector2i(100, 200)));
-	});
-	m_options->AddSlider(testSlider);
 
 
 	// Sprites
@@ -216,6 +194,33 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	m_options->AddSprite(optionsBkgd);
 
 	// Buttons
+	/*ui::Button* resB = new ui::Button("Reset");
+	resB->text.setFont(m_font);
+	resB->text.setString("Reset progress");
+	resB->text.setCharacterSize(20);
+	resB->shape.setSize(sf::Vector2f(resB->text.getGlobalBounds().width + 20, 30));
+
+	resB->setUpdateFunction([&](ui::Button* self)
+	{
+	self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+	});
+
+	resB->setClickFunction([&](ui::Button* self)
+	{
+	if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
+	{
+	for (World& w : ctr.worlds)
+	{
+	w.able = w.index != 0 ? false : true;
+	w.completed = 0;
+	w.record = NO_RECORD;
+	}
+
+	ResetUi(window, r, ctr);
+	}
+	});
+	m_options->AddButton(resB);*/
+
 	ui::Button* backBut = new ui::Button("OptionsBack");
 	backBut->text.setFont(m_font);
 	backBut->text.setString("Back");
@@ -229,8 +234,36 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 
 	backBut->setClickFunction([&](ui::Button* self)
 	{
-		ResetUi(window, r, ctr);
-		ctr.SetState(State::Menu);
+		if (ctr.settings.GetAudioLevel() != m_options->GetSlider("audio")->GetValue())
+		{
+			switch (MessageBox(NULL, "Do you want to save?", "WARNING", MB_YESNOCANCEL))
+			{
+			case IDYES:
+			{
+				Apply(ctr);
+				ResetUi(window, r, ctr);
+				ctr.SetState(State::Menu);
+
+				break;
+			}
+			case IDNO:
+			{
+				ResetUi(window, r, ctr);
+				ctr.SetState(State::Menu);
+
+				break;
+			}
+			case IDCANCEL:
+			{
+				break;
+			}
+			}
+		}
+		else
+		{
+			ResetUi(window, r, ctr);
+			ctr.SetState(State::Menu);
+		}
 	});
 	m_options->AddButton(backBut);
 
