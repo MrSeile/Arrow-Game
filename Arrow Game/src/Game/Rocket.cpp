@@ -30,7 +30,7 @@ Rocket::Rocket()
 }
 
 // Rotate the arrow when you press the keyboard arrows
-float Rocket::Input(float dT)
+void Rocket::Input(float dT)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -40,8 +40,6 @@ float Rocket::Input(float dT)
 	{
 		drawable.setRotation(drawable.getRotation() + (300 * dT));
 	}
-
-	return drawable.getRotation();
 }
 
 // Set the position
@@ -71,4 +69,13 @@ void Rocket::Draw(sf::RenderWindow& window)
 {
 	drawable.setPosition(pos);
 	window.draw(drawable);
+}
+
+void Rocket::Reset(const World& world)
+{
+	drawable.setFillColor(world.rocketColor);
+	acc = { 0, 0 };
+	vel = { 0, 0 };
+	pos = { world.iX, world.iY };
+	drawable.setRotation(world.rotation);
 }

@@ -12,16 +12,6 @@ namespace Options
 	};
 }
 
-// Set the player to the start
-void Reset(Rocket& r, World& world)
-{
-	r.drawable.setFillColor(world.rocketColor);
-	r.acc = { 0, 0 };
-	r.vel = { 0, 0 };
-	r.pos = { world.iX, world.iY };
-	r.drawable.setRotation(world.rotation);
-}
-
 int bToh(const int& val)
 {
 	return (val / 255)*  100;

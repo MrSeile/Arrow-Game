@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\Global.h"
+#include "World.h"
 
 class Rocket
 {
@@ -9,8 +10,10 @@ public:
 
 	// Functions
 	void Update(float dT);
-	float Input(float dT);
+	void Input(float dT);
 	void Draw(sf::RenderWindow& window);
+
+	void Reset(const World& world);
 
 	// Arrow mass
 	float mass;

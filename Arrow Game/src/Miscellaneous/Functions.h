@@ -5,9 +5,6 @@
 #include "..\Game\Controller.h"
 #include "..\Game\Rocket.h"
 
-// Replace the roket in position
-void Reset(Rocket& r, World& world);
-
 // Byte to 100
 int bToh(const int& val);
 
