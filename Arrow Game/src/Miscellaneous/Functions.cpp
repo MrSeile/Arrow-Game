@@ -7,16 +7,14 @@ namespace Options
 		AntiAliasing = 0,
 		FullScreen = 1,
 		Lightning = 2,
-		AudioLevel = 3
+		AudioLevel = 3,
+		length
 	};
 }
 
 // Set the player to the start
 void Reset(Rocket& r, World& world)
 {
-	world.levelImg.loadFromFile(world.ImgPath);
-	world.levelTex.loadFromFile(world.ImgPath);
-	world.levelSpr.setTexture(world.levelTex);
 	r.drawable.setFillColor(world.rocketColor);
 	r.acc = { 0, 0 };
 	r.vel = { 0, 0 };
@@ -42,7 +40,7 @@ void WriteFile(Controller& ctr)
 	std::fstream settingsFile;
 	settingsFile.open("data/settings.stg", std::fstream::out | std::fstream::trunc);
 
-	for (uint i = 0; i < 1000; i++)
+	for (uint i = 0; i < Type::length; i++)
 	{
 		switch (i)
 		{
@@ -479,5 +477,10 @@ void ReadFile(std::string path, World& world)
 
 	world.AblePath = ablePath;
 	world.Level = path;
+
+	world.levelImg.loadFromFile(world.ImgPath);
+	world.levelTex.loadFromFile(world.ImgPath);
+	world.levelSpr.setTexture(world.levelTex);
+
 	world.timer.restart();
 }

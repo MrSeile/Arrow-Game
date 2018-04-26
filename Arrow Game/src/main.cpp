@@ -24,15 +24,15 @@ int main()
 	// Load the settings from file
 	LoadSettings(ctr.settings);
 
+	// Create the window
+	sf::RenderWindow window(sf::VideoMode((unsigned int)1280, (unsigned int)680), "Arrow Game", sf::Style::Default, ctr.settings.GetContextSettings());
+	window.setFramerateLimit(60);
+
 	// Rocket "Player"
 	Rocket r;
 
 	// Create the ctr.worlds
 	GenerateWorld(ctr.worlds);
-
-	// Create the window
-	sf::RenderWindow window(sf::VideoMode((unsigned int)1280, (unsigned int)680), "Arrow Game", sf::Style::Default, ctr.settings.GetContextSettings());
-	window.setFramerateLimit(60);
 
 	// "Camera"
 	sf::View view;
@@ -59,7 +59,7 @@ int main()
 					{
 						pressed = true;
 
-						float value = s->GetValue() * 100.f;
+						int value = (int)s->GetValue() * 100;
 
 						LogiLedSetLighting(value, value, value);
 					}
