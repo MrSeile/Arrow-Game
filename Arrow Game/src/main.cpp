@@ -1,9 +1,9 @@
 /*
 *	Name:		Arrow Game
 *	Author:		Elies Bertran Roca
-*	Date:		10/04/2018
-*	Version:	1.5
-*	Revision:	004
+*	Date:		26/04/2018
+*	Version:	1.6
+*	Revision:	001
 */
 
 #ifndef _DEBUG
@@ -19,7 +19,7 @@
 int main()
 {
 	// Create the window
-	sf::RenderWindow window(sf::VideoMode((unsigned int)384, (unsigned int)165), "Arrow Game", sf::Style::None);
+	sf::RenderWindow window(sf::VideoMode((uint)384, (uint)165), "Arrow Game", sf::Style::None);
 
 	// Loading screen
 	sf::Texture texture;
