@@ -17,6 +17,8 @@ private:
 	
 	sf::Font m_font;
 
+	std::vector<ui::Button*> levelButtons;
+
 	void Apply(Controller& ctr);
 
 public:
@@ -31,7 +33,5 @@ public:
 	Widget* GetPauseWidget();
 	Widget* GetPlayWidget();
 	Widget* GetFinishWidget();
-	
-	void ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr);
 };
 

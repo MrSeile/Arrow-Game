@@ -21,23 +21,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 {
 	m_font.loadFromFile("res/font/font.ttf");
 
-	m_menu = new Widget();
+	m_menu =	new Widget();
 	m_options = new Widget();
-	m_pause = new Widget();
-	m_play = new Widget();
-	m_finish = new Widget();
-
-	ResetUi(window, r, ctr);
-}
-
-void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr)
-{
-	// Clear everything
-	m_menu->Clear();
-	m_options->Clear();
-	m_pause->Clear();
-	m_play->Clear();
-	m_finish->Clear();
+	m_pause =	new Widget();
+	m_play =	new Widget();
+	m_finish =	new Widget();
 
 	////////////////////
 	// MENU
@@ -92,8 +80,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	m_menu->AddButton(optionsBut);
 
 
-	sf::Vector2f pos(10, 10);
-
 	for (World& w : ctr.worlds)
 	{
 		ui::Button* b = new ui::Button(w.id);
@@ -103,15 +89,29 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
 		b->setAble(w.able);
 
-		if (pos.x + b->shape.getGlobalBounds().width * 1.1 >= window.getSize().x)
+		b->setUpdateFunction([&](ui::Button* self)
 		{
-			pos.y += 40;
-			pos.x = 10;
-		}
+			if (self != levelButtons[0])
+			{
+				ptrdiff_t index = std::find(levelButtons.begin(), levelButtons.end(), self) - levelButtons.begin();
 
-		b->setUpdateFunction([&, pos](ui::Button* self)
-		{
-			self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)pos.x, (int)pos.y)));
+				ui::Button* prev = levelButtons[index - 1];
+
+				sf::Vector2f newPos(prev->getPosition().x + prev->shape.getSize().x + 6, prev->getPosition().y);
+
+				if ((window.mapCoordsToPixel(newPos).x + (self->shape.getSize().x * 1.1f)) < window.getSize().x)
+				{
+					self->shape.setPosition(newPos);
+				}
+				else
+				{
+					self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 0)).x, newPos.y + 40);
+				}
+			}
+			else
+			{
+				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
+			}
 
 			if (w.completed = 1)
 			{
@@ -131,7 +131,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 				{
 					ctr.SetState(State::Pause);
 					ctr.level = w.index;
-					ctr.cWorld =& w;
+					ctr.cWorld = &w;
 
 					Reset(r, *ctr.cWorld);
 
@@ -141,8 +141,7 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 		});
 
 		m_menu->AddButton(b);
-
-		pos.x += b->shape.getGlobalBounds().width * 1.1f + 5;
+		levelButtons.push_back(b);
 	}
 
 	/////////////////////////
@@ -215,8 +214,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	w.completed = 0;
 	w.record = NO_RECORD;
 	}
-
-	ResetUi(window, r, ctr);
 	}
 	});
 	m_options->AddButton(resB);*/
@@ -241,14 +238,12 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 			case IDYES:
 			{
 				Apply(ctr);
-				ResetUi(window, r, ctr);
 				ctr.SetState(State::Menu);
 
 				break;
 			}
 			case IDNO:
 			{
-				ResetUi(window, r, ctr);
 				ctr.SetState(State::Menu);
 
 				break;
@@ -261,7 +256,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 		}
 		else
 		{
-			ResetUi(window, r, ctr);
 			ctr.SetState(State::Menu);
 		}
 	});
@@ -300,7 +294,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	{
 		Apply(ctr);
 		ctr.SetState(State::Menu);
-		ResetUi(window, r, ctr);
 	});
 	m_options->AddButton(acceptBut);
 
@@ -588,7 +581,6 @@ void UserInterface::ResetUi(sf::RenderWindow& window, Rocket& r, Controller& ctr
 	{
 		ctr.SetState(State::Menu);
 		Reset(r, *ctr.cWorld);
-		ResetUi(window, r, ctr);
 	});
 
 	menuB->setUpdateFunction([&](ui::Button* self)
@@ -680,7 +672,6 @@ void UserInterface::CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& win
 			if (e.key.code == sf::Keyboard::M || e.key.code == sf::Keyboard::Escape)
 			{
 				ctr.SetState(State::Menu);
-				ResetUi(window, r, ctr);
 			}
 			break;
 

@@ -42,7 +42,7 @@ int main()
 	UserInterface UI(window, r, ctr);
 
 
-	/*// Ligthing
+	// Ligthing
 	std::thread ligthing([&]
 	{
 		LogiLedInit();
@@ -92,7 +92,7 @@ int main()
 				}
 				case State::End:
 				{
-					if (ctr.cWorld->currentT < ctr.cWorld->time.goldT)		LogiLedSetLighting(100, 78, 0);
+					if (ctr.cWorld->currentT < ctr.cWorld->time.goldT)			LogiLedSetLighting(100, 78, 0);
 					else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting(82, 82, 82);
 					else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting(65, 44, 39);
 					else														LogiLedSetLighting(100, 100, 100);
@@ -101,7 +101,7 @@ int main()
 				}
 			}
 		}
-	});*/
+	});
 
 
 	// Main loop
@@ -115,16 +115,12 @@ int main()
 
 			if (e.type == sf::Event::Closed)
 			{
-				//ligthing.detach();
+				ligthing.detach();
 				LogiLedShutdown();
 
 				WriteFile(ctr);
 
 				window.close();
-			}
-			if (e.type == sf::Event::Resized)
-			{
-				UI.ResetUi(window, r, ctr);
 			}
 		}
 
@@ -138,15 +134,14 @@ int main()
 		}
 
 		// Cheat ;D
-		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
 			sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
 		{
 			for (World& w : ctr.worlds)
 			{
 				w.able = true;
-				UI.ResetUi(window, r, ctr);
 			}
-		}*/
+		}
 
 		////////////////////////
 		// If I'm playing...
