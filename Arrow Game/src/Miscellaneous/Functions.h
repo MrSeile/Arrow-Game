@@ -4,21 +4,28 @@
 #include "..\Game\World.h"
 #include "..\Game\Controller.h"
 #include "..\Game\Rocket.h"
+#include "..\Game\Settings.h"
 
-// Byte to 100
-int bToh(const int& val);
+#define mapf map<float>
 
 // Load settings
 void LoadSettings(Settings& settings);
 
-// Map functions
-float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax);
+// Close the game
+void CloseGame(sf::RenderWindow& window, Controller& ctr, std::thread& ligthing);
 
 // Write to a.able file all the stats for all levels
-void WriteFile(Controller& ctr);
+void SaveGame(Controller& ctr);
 
 // Generate all the wolds and add them to an array
 void GenerateWorld(std::vector<World>& worlds);
 
 // Generate a world from a file
-void ReadFile(std::string path, World& world);
+World* ReadFile(std::string path, const uint& index);
+
+// Map functions
+template<typename T>
+inline T map(const T& value, const T& inputMin, const T& inputMax, const T& outputMin, const T& outputMax)
+{
+	return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (value - inputMin);
+}

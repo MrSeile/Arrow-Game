@@ -5,6 +5,7 @@
 #include "..\Game\Rocket.h"
 #include "..\Game\Controller.h"
 #include "..\Game\World.h"
+#include "..\Miscellaneous\Functions.h"
 
 class UserInterface
 {
@@ -22,11 +23,13 @@ private:
 	void Apply(Controller& ctr);
 
 public:
-	UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr);
+	UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr, std::thread& ligthing);
 
 	void Update(const State& state, sf::RenderWindow& window);
 	void Draw(const State& state, sf::RenderWindow& window);
 	void CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& window, const sf::Event& e);
+
+	float zoom;
 
 	Widget* GetMenuWidget();
 	Widget* GetOptionsWidget();

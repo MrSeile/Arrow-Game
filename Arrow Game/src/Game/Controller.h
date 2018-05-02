@@ -27,6 +27,9 @@ public:
 	// Current world
 	World* cWorld = new World;
 
+	// Set
 	void SetState(const State& newState);
+	
+	// Get
 	const State& GetState();
 };

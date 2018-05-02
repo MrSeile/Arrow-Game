@@ -17,7 +17,7 @@ public:
 	// World
 	std::string id;
 	bool able = false;
-	int index;
+	uint index;
 	int completed = 0;
 	float record = NO_RECORD;
 

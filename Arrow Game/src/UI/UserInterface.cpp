@@ -1,24 +1,14 @@
 #include "UserInterface.h"
 
-static void Reset(Rocket& r, World& world)
-{
-	world.levelImg.loadFromFile(world.ImgPath);
-	world.levelTex.loadFromFile(world.ImgPath);
-	world.levelSpr.setTexture(world.levelTex);
-	r.drawable.setFillColor(world.rocketColor);
-	r.acc = { 0, 0 };
-	r.vel = { 0, 0 };
-	r.pos = { world.iX, world.iY };
-	r.drawable.setRotation(world.rotation);
-}
-
 void UserInterface::Apply(Controller& ctr)
 {
 	ctr.settings.SetAudioLevel(m_options->GetSlider("audio")->GetValue());
 }
 
-UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr)
+UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr, std::thread& ligthing)
 {
+	zoom = 1.f;
+
 	m_font.loadFromFile("res/font/font.ttf");
 
 	m_menu =	new Widget();
@@ -40,11 +30,12 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	menuImg->setUpdateFunction([&](ui::Sprite* self)
 	{
-		self->setScale(((float)window.getSize().x / (float)self->getTexture()->getSize().x) / 1.1f, ((float)window.getSize().y / (float)self->getTexture()->getSize().y) / 1.1f);
+		self->setScale(((float)(window.getSize().x * zoom) / (float)self->getTexture()->getSize().x), ((float)(window.getSize().y * zoom) / (float)self->getTexture()->getSize().y));
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});
 	m_menu->AddSprite(menuImg);
+	m_options->AddSprite(menuImg);
 
 	// Texts
 	ui::Text* title = new ui::Text("title");
@@ -52,16 +43,36 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	title->setOutlineColor(sf::Color::Black);
 	title->setOutlineThickness(2);
 	title->setString("Arrow Game");
-	title->setCharacterSize(80);
+	title->setCharacterSize(100U);
 
 	title->setUpdateFunction([&](ui::Text* self)
 	{
-		self->setString(std::to_string(ctr.settings.GetAudioLevel()));
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x - self->getGlobalBounds().width - 80), (int)(window.getSize().y - self->getGlobalBounds().height*  1.5f - 10))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(((int)((window.getSize().x) - (self->getGlobalBounds().width / zoom) - (20 / zoom))), (int)((window.getSize().y) - (self->getGlobalBounds().height / zoom) - (40 / zoom)))));
 	});
 	m_menu->AddText(title);
 
 	// Buttons
+	ui::Button* quitB = new ui::Button("quitButton");
+	quitB->text.setFont(m_font);
+	quitB->text.setCharacterSize(30);
+	quitB->text.setString("X");
+	quitB->shape.setSize(sf::Vector2f(30, 30));
+
+	quitB->setUpdateFunction([&](ui::Button* self)
+	{
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (self->shape.getSize().x / zoom) - (10 / zoom), 10 / zoom)));
+	});
+
+	quitB->setClickFunction([&](ui::Button* self)
+	{
+		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
+		{
+			CloseGame(window, ctr, ligthing);
+		}
+	});
+
+	m_menu->AddButton(quitB);
+
 	ui::Button* optionsBut = new ui::Button("OptionsBut");
 	optionsBut->text.setFont(m_font);
 	optionsBut->text.setString("Options");
@@ -70,7 +81,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	optionsBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10 / zoom, window.getSize().y - (self->shape.getSize().y / zoom) - 10 / zoom)));
 	});
 
 	optionsBut->setClickFunction([&](ui::Button* self)
@@ -99,18 +110,34 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 				sf::Vector2f newPos(prev->getPosition().x + prev->shape.getSize().x + 6, prev->getPosition().y);
 
-				if ((window.mapCoordsToPixel(newPos).x + (self->shape.getSize().x * 1.1f)) < window.getSize().x)
+				if (newPos.y == window.mapPixelToCoords(sf::Vector2i(0, 10 / zoom)).y)
 				{
-					self->shape.setPosition(newPos);
+					sf::Vector2i quitPos = window.mapCoordsToPixel(m_menu->GetButton("quitButton")->getPosition());
+
+					if ((window.mapCoordsToPixel(newPos).x + (self->shape.getSize().x / zoom)) < quitPos.x - (20 / zoom))
+					{
+						self->shape.setPosition(newPos);
+					}
+					else
+					{
+						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10 / zoom, 0)).x, newPos.y + 40);
+					}
 				}
 				else
 				{
-					self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 0)).x, newPos.y + 40);
+					if ((window.mapCoordsToPixel(newPos).x + (self->shape.getSize().x / zoom)) < window.getSize().x)
+					{
+						self->shape.setPosition(newPos);
+					}
+					else
+					{
+						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10 / zoom, 0)).x, newPos.y + 40);
+					}
 				}
 			}
 			else
 			{
-				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, 10)));
+				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10 / zoom, 10 / zoom)));
 			}
 
 			if (w.completed = 1)
@@ -133,7 +160,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 					ctr.level = w.index;
 					ctr.cWorld = &w;
 
-					Reset(r, *ctr.cWorld);
+					r.Reset(*ctr.cWorld);
 
 					ctr.cWorld->timer.restart();
 				}
@@ -155,7 +182,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	audioText->setString("Audio");
 	audioText->setUpdateFunction([&](sf::Text* self)
 	{
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(50, 100)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(50 / zoom, 100 / zoom)));
 	});
 	
 	m_options->AddText(audioText);
@@ -177,7 +204,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 
 	// Sprites
-	sf::Texture* optionsBackgrowndText = new sf::Texture;
+	/*sf::Texture* optionsBackgrowndText = new sf::Texture;
 	optionsBackgrowndText->loadFromFile("res/img/menu.png");
 
 	ui::Sprite* optionsBkgd = new ui::Sprite("optionsBkgd");
@@ -186,11 +213,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	optionsBkgd->setUpdateFunction([&](ui::Sprite* self)
 	{
-		self->setScale(((float)window.getSize().x / (float)self->getTexture()->getSize().x) / 1.1f, ((float)window.getSize().y / (float)self->getTexture()->getSize().y) / 1.1f);
+		self->setScale(((float)window.getSize().x / (float)self->getTexture()->getSize().x), ((float)window.getSize().y / (float)self->getTexture()->getSize().y));
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
-	});
-	m_options->AddSprite(optionsBkgd);
+	});*/
+	//m_options->AddSprite(optionsBkgd);
 
 	// Buttons
 	/*ui::Button* resB = new ui::Button("Reset");
@@ -201,20 +228,20 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	resB->setUpdateFunction([&](ui::Button* self)
 	{
-	self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
 	});
 
 	resB->setClickFunction([&](ui::Button* self)
 	{
-	if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
-	{
-	for (World& w : ctr.worlds)
-	{
-	w.able = w.index != 0 ? false : true;
-	w.completed = 0;
-	w.record = NO_RECORD;
-	}
-	}
+		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
+		{
+			for (World& w : ctr.worlds)
+			{
+				w.able = w.index != 0 ? false : true;
+				w.completed = 0;
+				w.record = NO_RECORD;
+			}
+		}
 	});
 	m_options->AddButton(resB);*/
 
@@ -226,7 +253,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	backBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10, window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(10 / zoom, window.getSize().y - (40 / zoom))));
 	});
 
 	backBut->setClickFunction([&](ui::Button* self)
@@ -239,13 +266,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 			{
 				Apply(ctr);
 				ctr.SetState(State::Menu);
-
 				break;
 			}
 			case IDNO:
 			{
 				ctr.SetState(State::Menu);
-
 				break;
 			}
 			case IDCANCEL:
@@ -269,7 +294,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	applyBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x * 1.1f) - 10, window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x / zoom) - (10 / zoom), window.getSize().y - (40 / zoom))));
 	});
 
 	applyBut->setClickFunction([&](ui::Button* self)
@@ -286,8 +311,8 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	acceptBut->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x * 1.1f) - 10,
-																		window.getSize().y - 40)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - (10 / zoom),
+																		window.getSize().y - (40 / zoom))));
 	});
 
 	acceptBut->setClickFunction([&](ui::Button* self)
@@ -305,7 +330,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	optionsTitle->setFillColor(sf::Color::Black);
 	optionsTitle->setUpdateFunction([&](ui::Text* self)
 	{
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(20, 20)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(20 / zoom, 20 / zoom)));
 	});
 	m_options->AddText(optionsTitle);
 
@@ -323,7 +348,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	rewardsImg->setUpdateFunction([&](ui::Sprite* self)
 	{
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - 70)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - (70 / zoom))));
 	});
 	m_pause->AddSprite(rewardsImg);
 
@@ -342,7 +367,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		self->setString(lTitleText.str().c_str());
 		self->setOrigin(sf::Vector2f(self->getLocalBounds().width / 2.f, 0));
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, 10)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, 10 / zoom)));
 	});
 	m_pause->AddText(levelTitleP);
 
@@ -358,7 +383,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(goldT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - 260, (int)(window.getSize().y) - 90)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (260 / zoom), (int)(window.getSize().y) - (90 / zoom))));
 	});
 	m_pause->AddText(goldT);
 
@@ -374,7 +399,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(silverT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - 25, (int)(window.getSize().y) - 90)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (25 / zoom), (int)(window.getSize().y) - (90 / zoom))));
 	});
 	m_pause->AddText(silverT);
 
@@ -390,7 +415,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(bronzeT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + 210, (int)(window.getSize().y) - 90)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + (210 / zoom), (int)(window.getSize().y) - (90 / zoom))));
 	});
 	m_pause->AddText(bronzeT);
 
@@ -415,7 +440,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(t_record.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - 430, (int)(window.getSize().y) - 95)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (430 / zoom), (int)(window.getSize().y) - (95 / zoom))));
 	});
 	m_pause->AddText(recordT);
 
@@ -440,7 +465,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(currentT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(5, 5)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(5 / zoom, 5 / zoom)));
 	});
 	m_play->AddText(currentT);
 
@@ -480,7 +505,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		}
 
 		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - 55)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - (55 / zoom))));
 	});
 	m_finish->AddText(newRecordT);
 
@@ -498,7 +523,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		self->setString(lTitleText.str().c_str());
 		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - 120)));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - (120 / zoom))));
 	});
 	m_finish->AddText(levelTitleF);
 
@@ -538,15 +563,15 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		{
 			ctr.SetState(State::Pause);
 			ctr.level++;
-			ctr.cWorld =& ctr.worlds[ctr.level];
-			Reset(r, *ctr.cWorld);
+			ctr.cWorld = &ctr.worlds[ctr.level];
+			r.Reset(*ctr.cWorld);
 			ctr.cWorld->timer.restart();
 		}
 	});
 
 	nextB->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + 97, (window.getSize().y / 2) + 78)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + (88 / zoom), (window.getSize().y / 2) + (71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddButton(nextB);
@@ -560,13 +585,13 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	resetB->setClickFunction([&](ui::Button* self)
 	{
 		ctr.SetState(State::Pause);
-		Reset(r, *ctr.cWorld);
+		r.Reset(*ctr.cWorld);
 		ctr.cWorld->timer.restart();
 	});
 
 	resetB->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - 50, (window.getSize().y / 2) + 78)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - (45 / zoom), (window.getSize().y / 2) + (71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddButton(resetB);
@@ -580,12 +605,12 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	menuB->setClickFunction([&](ui::Button* self)
 	{
 		ctr.SetState(State::Menu);
-		Reset(r, *ctr.cWorld);
+		r.Reset(*ctr.cWorld);
 	});
 
 	menuB->setUpdateFunction([&](ui::Button* self)
 	{
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - 205, (window.getSize().y / 2) + 78)));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - (186 / zoom), (window.getSize().y / 2) + (71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddButton(menuB);

@@ -30,7 +30,7 @@ Rocket::Rocket()
 }
 
 // Rotate the arrow when you press the keyboard arrows
-void Rocket::Input(float dT)
+void Rocket::Input(const float& dT)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -43,7 +43,7 @@ void Rocket::Input(float dT)
 }
 
 // Set the position
-void Rocket::Update(float dT)
+void Rocket::Update(const float& dT)
 {
 	acc += sf::Vector2f((float)(accScale * cos(drawable.getRotation() * PI / 180)) * dT,
 						(float)(accScale * sin(drawable.getRotation() * PI / 180)) * dT ) / mass;

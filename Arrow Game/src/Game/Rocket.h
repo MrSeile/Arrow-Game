@@ -9,8 +9,8 @@ public:
 	Rocket();
 
 	// Functions
-	void Update(float dT);
-	void Input(float dT);
+	void Update(const float& dT);
+	void Input(const float& dT);
 	void Draw(sf::RenderWindow& window);
 
 	void Reset(const World& world);

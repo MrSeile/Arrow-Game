@@ -12,18 +12,18 @@ namespace Options
 	};
 }
 
-int bToh(const int& val)
+void CloseGame(sf::RenderWindow& window, Controller& ctr, std::thread& ligthing)
 {
-	return (val / 255)*  100;
-}
+	ligthing.detach();
+	LogiLedShutdown();
 
-float map(const float& value, const float& inputMin, const float& inputMax, const float& outputMin, const float& outputMax)
-{
-	return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (value - inputMin);
+	SaveGame(ctr);
+
+	window.close();
 }
 
 // Write to a.able file all the stats for all levels
-void WriteFile(Controller& ctr)
+void SaveGame(Controller& ctr)
 {
 	using namespace Options;
 
@@ -85,10 +85,7 @@ void WriteFile(Controller& ctr)
 // Generate all the wolds and add them to an array
 void GenerateWorld(std::vector<World>& worlds)
 {
-	int index = 0;
-
-	// Temp
-	World w;
+	uint index = 0;
 
 	std::ifstream settings;
 	settings.open("res/levels/settings.stg");
@@ -96,25 +93,21 @@ void GenerateWorld(std::vector<World>& worlds)
 	std::string s;
 	std::getline(settings, s);
 
-	ReadFile(s, w);
+	settings.close();
 
-	w.index = index;
-
-	while (true)
+	do
 	{
-		index++;
-
-		worlds.push_back(w);
-
-		ReadFile(w.NextLevel, w);
-		w.index = index;
-
-		if (w.NextLevel == "NULL")
+		if (index == 0)
 		{
-			worlds.push_back(w);
-			break;
+			worlds.push_back(*ReadFile(s, index));
 		}
-	}
+		else
+		{
+			worlds.push_back(*ReadFile(worlds.back().NextLevel, index));
+		}
+
+		index++;
+	} while (worlds.back().NextLevel != "NULL");
 }
 
 // Load settings
@@ -167,8 +160,10 @@ void LoadSettings(Settings& settings)
 }
 
 // Generate a world from a file
-void ReadFile(std::string path, World& world)
+World* ReadFile(std::string path, const uint& index)
 {
+	World* world = new World;
+
 	// Input type enumeration
 	enum class Type
 	{
@@ -185,11 +180,14 @@ void ReadFile(std::string path, World& world)
 	} m_type = Type::Null;
 
 	// Set the world colors to the default
-	world.roadColor =		sf::Color(255, 255, 255);
-	world.obstacleColor =	sf::Color(50, 50, 50);
-	world.goalColor =		sf::Color(0, 255, 0);
-	world.backgrowndColor = sf::Color(50, 50, 50);
-	world.rocketColor =		sf::Color(0, 0, 0);
+	world->roadColor =			sf::Color(255, 255, 255);
+	world->obstacleColor =		sf::Color(50, 50, 50);
+	world->goalColor =			sf::Color(0, 255, 0);
+	world->backgrowndColor =	sf::Color(50, 50, 50);
+	world->rocketColor =		sf::Color(0, 0, 0);
+
+	// Set index
+	world->index = index;
 
 	// Current line
 	int line = 0;
@@ -265,19 +263,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.id = val;
+						world->id = val;
 						break;
 
 					case 2:
-						world.iX = std::stof(val);
+						world->iX = std::stof(val);
 						break;
 
 					case 3:
-						world.iY = std::stof(val);
+						world->iY = std::stof(val);
 						break;
 
 					case 4:
-						world.rotation = std::stof(val);
+						world->rotation = std::stof(val);
 						break;
 					}
 				}
@@ -287,19 +285,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.time.maxT = std::stof(val);
+						world->time.maxT = std::stof(val);
 						break;
 
 					case 2:
-						world.time.bronzeT = std::stof(val);
+						world->time.bronzeT = std::stof(val);
 						break;
 
 					case 3:
-						world.time.silverT = std::stof(val);
+						world->time.silverT = std::stof(val);
 						break;
 
 					case 4:
-						world.time.goldT = std::stof(val);
+						world->time.goldT = std::stof(val);
 						break;
 					}
 				}
@@ -308,7 +306,7 @@ void ReadFile(std::string path, World& world)
 				{
 					if (line == 1)
 					{
-						world.ImgPath = "res/" + val;
+						world->ImgPath = "res/" + val;
 					}
 				}
 				// Level to open afterwards
@@ -316,7 +314,7 @@ void ReadFile(std::string path, World& world)
 				{
 					if (line == 1)
 					{
-						world.NextLevel = val;
+						world->NextLevel = val;
 					}
 				}
 				// Obstacle color
@@ -325,19 +323,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.obstacleColor.r = std::stoi(val);
+						world->obstacleColor.r = std::stoi(val);
 						break;
 
 					case 2:
-						world.obstacleColor.g = std::stoi(val);
+						world->obstacleColor.g = std::stoi(val);
 						break;
 
 					case 3:
-						world.obstacleColor.b = std::stoi(val);
+						world->obstacleColor.b = std::stoi(val);
 						break;
 
 					case 4:
-						world.obstacleColor.a = std::stoi(val);
+						world->obstacleColor.a = std::stoi(val);
 						break;
 					}
 				}
@@ -347,19 +345,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.goalColor.r = std::stoi(val);
+						world->goalColor.r = std::stoi(val);
 						break;
 
 					case 2:
-						world.goalColor.g = std::stoi(val);
+						world->goalColor.g = std::stoi(val);
 						break;
 
 					case 3:
-						world.goalColor.b = std::stoi(val);
+						world->goalColor.b = std::stoi(val);
 						break;
 
 					case 4:
-						world.goalColor.a = std::stoi(val);
+						world->goalColor.a = std::stoi(val);
 						break;
 					}
 				}
@@ -369,19 +367,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.backgrowndColor.r = std::stoi(val);
+						world->backgrowndColor.r = std::stoi(val);
 						break;
 
 					case 2:
-						world.backgrowndColor.g = std::stoi(val);
+						world->backgrowndColor.g = std::stoi(val);
 						break;
 
 					case 3:
-						world.backgrowndColor.b = std::stoi(val);
+						world->backgrowndColor.b = std::stoi(val);
 						break;
 
 					case 4:
-						world.backgrowndColor.a = std::stoi(val);
+						world->backgrowndColor.a = std::stoi(val);
 						break;
 					}
 				}
@@ -391,19 +389,19 @@ void ReadFile(std::string path, World& world)
 					switch (line)
 					{
 					case 1:
-						world.rocketColor.r = std::stoi(val);
+						world->rocketColor.r = std::stoi(val);
 						break;
 
 					case 2:
-						world.rocketColor.g = std::stoi(val);
+						world->rocketColor.g = std::stoi(val);
 						break;
 
 					case 3:
-						world.rocketColor.b = std::stoi(val);
+						world->rocketColor.b = std::stoi(val);
 						break;
 
 					case 4:
-						world.rocketColor.a = std::stoi(val);
+						world->rocketColor.a = std::stoi(val);
 						break;
 					}
 				}
@@ -442,21 +440,21 @@ void ReadFile(std::string path, World& world)
 			break;
 
 		case 2:
-			world.able = (std::stoi(val) / (code*  code)) - 1 == 1 ? true : false;
+			world->able = (std::stoi(val) / (code*  code)) - 1 == 1 ? true : false;
 			break;
 
 		case 3:
-			world.completed = (int)(std::stoi(val) / (code*  code)) - 1;
+			world->completed = (int)(std::stoi(val) / (code*  code)) - 1;
 			break;
 
 		case 4:
 			if (val == "NO_RECORD")
 			{
-				world.record = NO_RECORD;
+				world->record = NO_RECORD;
 			}
 			else
 			{
-				world.record = (float)(std::stof(val) / (code*  code)) - 1;
+				world->record = (float)(std::stof(val) / (code*  code)) - 1;
 			}
 			break;
 		}
@@ -465,12 +463,14 @@ void ReadFile(std::string path, World& world)
 
 	ableFile.close();
 
-	world.AblePath = ablePath;
-	world.Level = path;
+	world->AblePath = ablePath;
+	world->Level = path;
 
-	world.levelImg.loadFromFile(world.ImgPath);
-	world.levelTex.loadFromFile(world.ImgPath);
-	world.levelSpr.setTexture(world.levelTex);
+	world->levelImg.loadFromFile(world->ImgPath);
+	world->levelTex.loadFromFile(world->ImgPath);
+	world->levelSpr.setTexture(world->levelTex);
 
-	world.timer.restart();
+	world->timer.restart();
+
+	return world;
 }

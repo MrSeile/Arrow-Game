@@ -23,6 +23,7 @@
 #include <thread>
 
 typedef unsigned int uint;
+typedef unsigned char byte;
 
 // State enumeration
 enum class State

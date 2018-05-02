@@ -12,8 +12,6 @@ ui::Slider::Slider(const std::string& id, const sf::Font& font)
 
 	m_text.setFont(font);
 	m_text.setFillColor(sf::Color::Black);
-	//m_text.setOutlineThickness(1);
-	//m_text.setOutlineColor(sf::Color::Black);
 	m_text.setStyle(sf::Text::Bold);
 }
 
@@ -43,13 +41,15 @@ void ui::Slider::Update(const sf::RenderWindow& window)
 {
 	if (m_pressed)
 	{
-		m_value = map((sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_body.getPosition()).x - m_offset) / 1.1f, 0.f, m_body.getSize().x - m_slider.getSize().x, 0.f, 1.f);
+		float zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x;
+
+		m_value = map((sf::Mouse::getPosition(window).x - window.mapCoordsToPixel(m_body.getPosition()).x - m_offset) * zoom, 0.f, m_body.getSize().x - m_slider.getSize().x, 0.f, 1.f);
 		
 		if (m_value < 0)
 		{
 			m_value = 0;
 		}
-		else if (map(m_value, 0.f, 1.f, 0.f, m_body.getSize().x - m_slider.getSize().x) > (m_body.getSize().x / 1.f) - m_slider.getSize().x)
+		else if (map(m_value, 0.f, 1.f, 0.f, m_body.getSize().x - m_slider.getSize().x) > (m_body.getSize().x) - m_slider.getSize().x)
 		{
 			m_value = 1;
 		}

@@ -1,8 +1,8 @@
 /*
 *	Name:		Arrow Game
 *	Author:		Elies Bertran Roca
-*	Date:		26/04/2018
-*	Version:	1.6
+*	Date:		30/04/2018
+*	Version:	1.7
 *	Revision:	001
 */
 
@@ -19,7 +19,7 @@
 int main()
 {
 	// Create the window
-	sf::RenderWindow window(sf::VideoMode((uint)384, (uint)165), "Arrow Game", sf::Style::None);
+	sf::RenderWindow window(sf::VideoMode(384U, 165U), "Arrow Game", sf::Style::None);
 
 	// Loading screen
 	sf::Texture texture;
@@ -35,6 +35,8 @@ int main()
 
 	// Load the settings from file
 	LoadSettings(ctr.settings);
+	ctr.settings.SetFullscreen(false);
+	ctr.settings.SetAntialiasingLevel(8);
 
 	// Rocket "Player"
 	Rocket r;
@@ -46,74 +48,82 @@ int main()
 	sf::View view;
 	window.setView(view);
 
+	std::thread ligthing;
+
 	// Generate the user interface	
-	UserInterface UI(window, r, ctr);
+	UserInterface UI(window, r, ctr, ligthing);
 
 	// Create the window with loaded settings
-	window.create(	ctr.settings.GetFullscreen() ? sf::VideoMode::getFullscreenModes()[0] :  sf::VideoMode((uint)1280, (uint)680), 
+	window.create(	ctr.settings.GetFullscreen() ? sf::VideoMode::getFullscreenModes()[0] : sf::VideoMode(1280U, 680U), 
 					"Arrow Game", 
 					ctr.settings.GetFullscreen() ? sf::Style::Fullscreen : sf::Style::Default, 
 					ctr.settings.GetContextSettings());
 	
 	window.setFramerateLimit(60);
-
+	
 
 	// Ligthing
-	std::thread ligthing([&]
+	ligthing = std::thread([&]
 	{
-		LogiLedInit();
-
 		while (window.isOpen())
 		{
-			bool pressed = false;
-
-			if (ctr.GetState() == State::Options)
+			if (ctr.settings.GetLigthing())
 			{
-				for (ui::Slider* s : UI.GetOptionsWidget()->m_sliders)
+				bool pressed = false;
+
+				if (ctr.GetState() == State::Options)
 				{
-					if (s->IsPressed())
+					for (ui::Slider* s : UI.GetOptionsWidget()->m_sliders)
 					{
-						pressed = true;
+						if (s->IsPressed())
+						{
+							pressed = true;
 
-						int value = (int)s->GetValue() * 100;
-
-						LogiLedSetLighting(value, value, value);
+							int value = (int)(s->GetValue() * 100.f);
+							
+							LogiLedSetLighting(value, value, value);
+						}
 					}
 				}
-			}
 
-			if (!pressed)
-			{
-				switch (ctr.GetState())
+				if (!pressed)
 				{
-				case State::Menu:
-				{
-					LogiLedSetLighting(100, 100, 100);
-					break;
-				}
-				case State::Options:
-				{
-					LogiLedSetLighting(100, 100, 100);
-					break;
-				}
-				case State::Pause:
-				{
-					LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
-					break;
-				}
-				case State::Playing:
-				{
-					LogiLedSetLighting(bToh(ctr.cWorld->backgrowndColor.r), bToh(ctr.cWorld->backgrowndColor.g), bToh(ctr.cWorld->backgrowndColor.b));
-					break;
-				}
-				case State::End:
-				{
-					if (ctr.cWorld->currentT < ctr.cWorld->time.goldT)			LogiLedSetLighting(100, 78, 0);
-					else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting(82, 82, 82);
-					else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting(65, 44, 39);
-					else														LogiLedSetLighting(100, 100, 100);
-					break;
-				}
+					switch (ctr.GetState())
+					{
+					case State::Menu:
+					{
+						LogiLedSetLighting(100, 100, 100);
+						break;
+					}
+					case State::Options:
+					{
+						LogiLedSetLighting(100, 100, 100);
+						break;
+					}
+
+					case State::Pause:
+					{
+						LogiLedSetLighting(	(int)mapf(ctr.cWorld->backgrowndColor.r, 0.f, 255.f, 0.f, 100.f),
+											(int)mapf(ctr.cWorld->backgrowndColor.g, 0.f, 255.f, 0.f, 100.f),
+											(int)mapf(ctr.cWorld->backgrowndColor.b, 0.f, 255.f, 0.f, 100.f));
+						break;
+					}
+					case State::Playing:
+					{
+						LogiLedSetLighting(	(int)mapf(ctr.cWorld->backgrowndColor.r, 0.f, 255.f, 0.f, 100.f),
+											(int)mapf(ctr.cWorld->backgrowndColor.g, 0.f, 255.f, 0.f, 100.f),
+											(int)mapf(ctr.cWorld->backgrowndColor.b, 0.f, 255.f, 0.f, 100.f));
+						break;
+					}
+					case State::End:
+					{
+						if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		LogiLedSetLighting(100,  78,   0);
+						else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	LogiLedSetLighting( 82,  82,  82);
+						else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	LogiLedSetLighting( 65,  44,  39);
+						else														LogiLedSetLighting(100, 100, 100);
+						break;
+					}
+					}
 				}
 			}
 		}
@@ -131,12 +141,7 @@ int main()
 
 			if (e.type == sf::Event::Closed)
 			{
-				ligthing.detach();
-				LogiLedShutdown();
-
-				WriteFile(ctr);
-
-				window.close();
+				CloseGame(window, ctr, ligthing);
 			}
 		}
 
@@ -148,16 +153,6 @@ int main()
 			// Draw the level backgorwnd image
 			window.draw(ctr.cWorld->levelSpr);
 		}
-
-		// Cheat ;D
-		/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
-			sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
-		{
-			for (World& w : ctr.worlds)
-			{
-				w.able = true;
-			}
-		}*/
 
 		////////////////////////
 		// If I'm playing...
@@ -180,13 +175,13 @@ int main()
 			}
 
 			// Check if you are coliding with something
-			if (ctr.cWorld->levelImg.getPixel((unsigned int)r.pos.x, (unsigned int)r.pos.y) == ctr.cWorld->obstacleColor)
+			if (ctr.cWorld->levelImg.getPixel((uint)r.pos.x, (uint)r.pos.y) == ctr.cWorld->obstacleColor)
 			{
 				r.Reset(*ctr.cWorld);
 				ctr.SetState(State::Pause);
 				continue;
 			}
-			if (ctr.cWorld->levelImg.getPixel((unsigned int)r.pos.x, (unsigned int)r.pos.y) == ctr.cWorld->goalColor)
+			if (ctr.cWorld->levelImg.getPixel((uint)r.pos.x, (uint)r.pos.y) == ctr.cWorld->goalColor)
 			{
 				ctr.SetState(State::End);
 				ctr.cWorld->completed = 1;
@@ -202,12 +197,26 @@ int main()
 			}
 		}
 
+		#ifdef _DEBUG
+		// Cheat ;D
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown) &&
+			sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
+		{
+			for (World& w : ctr.worlds)
+			{
+				w.able = true;
+			}
+		}
+		#endif
+
 		// Draw the arrow
 		r.Draw(window);
 
 		// Set the camera center to the arrow position
+		//UI.zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x;
+
 		view.setCenter(r.pos);
-		view.setSize(window.getSize().x / 1.1f, window.getSize().y / 1.1f);
+		view.setSize(window.getSize().x * UI.zoom, window.getSize().y * UI.zoom);
 		window.setView(view);
 
 		// Update and draw the user interface
