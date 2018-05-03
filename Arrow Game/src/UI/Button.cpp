@@ -35,43 +35,46 @@ void ui::Button::Update(const sf::RenderWindow& window)
 	}
 }
 
-ui::Button* ui::Button::setClickFunction(const std::function<void(Button* self)>& function)
+void ui::Button::SetClickFunction(const std::function<void(Button* self)>& function)
 {
 	m_hasClickFuncion = true;
 	m_clickFunction = function;
-	return this;
 }
 
-ui::Button* ui::Button::setUpdateFunction(const std::function<void(Button* self)>& function)
+void ui::Button::SetUpdateFunction(const std::function<void(Button* self)>& function)
 {
 	m_hasCustomUpdateFunction = true;
 	m_updateFunction = function;
-	return this;
 }
 
-bool ui::Button::getAble()
+void ui::Button::SetBeginPlayFunction(const std::function<void(Button*self)>& function)
+{
+	m_hasCustomBeginPlayFunction = true;
+	m_beginPlayFunction = function;
+}
+
+bool ui::Button::GetAble()
 {
 	return m_able;
 }
 
-ui::Button* ui::Button::setAble(const bool& able)
+void ui::Button::SetAble(const bool& able)
 {
 	m_able = able;
 	text.setFillColor(able ? sf::Color(0, 0, 0) : sf::Color(200, 200, 200));
-	return this;
 }
 
-sf::Vector2f ui::Button::getPosition()
+sf::Vector2f ui::Button::GetPosition()
 {
 	return shape.getPosition();
 }
 
-std::function<void(ui::Button* self)> ui::Button::getClickEvent()
+std::function<void(ui::Button* self)> ui::Button::GetClickEvent()
 {
 	return m_clickFunction;
 }
 
-std::function<void(ui::Button* self)> ui::Button::getUpdateFunction()
+std::function<void(ui::Button* self)> ui::Button::GetUpdateFunction()
 {
 	return m_updateFunction;
 }
@@ -80,4 +83,12 @@ void ui::Button::Draw(sf::RenderWindow& window)
 {
 	window.draw(shape);
 	window.draw(text);
+}
+
+void ui::Button::BeginPlay()
+{
+	if (m_hasCustomBeginPlayFunction)
+	{
+		m_beginPlayFunction(this);
+	}
 }

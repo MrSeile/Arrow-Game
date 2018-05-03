@@ -115,6 +115,26 @@ void Widget::Draw(sf::RenderWindow& window)
 	}
 }
 
+void Widget::BeginPlay()
+{
+	for (ui::Button* b : m_buttons)
+	{
+		b->BeginPlay();
+	}
+	for (ui::Text* t : m_texts)
+	{
+		t->BeginPlay();
+	}
+	for (ui::Sprite* s : m_sprites)
+	{
+		s->BeginPlay();
+	}
+	for (ui::Slider* s : m_sliders)
+	{
+		s->BeginPlay();
+	}
+}
+
 void Widget::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 {
 	for (ui::Button* b : m_buttons)

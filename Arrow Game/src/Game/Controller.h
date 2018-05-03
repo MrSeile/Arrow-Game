@@ -1,9 +1,11 @@
 #pragma once
 
+#define m_CONTROLLER
+
 #include "..\Global.h"
-#include "World.h"
-#include "Rocket.h"
+//#include "..\UI\UserInterface.h" //--> EVERYTHING CRASHES!!!
 #include "Settings.h"
+#include "World.h"
 
 // Controller class
 class Controller
@@ -28,7 +30,7 @@ public:
 	World* cWorld = new World;
 
 	// Set
-	void SetState(const State& newState);
+	void SetState(const State& newState/*, UserInterface& UI*/);
 	
 	// Get
 	const State& GetState();

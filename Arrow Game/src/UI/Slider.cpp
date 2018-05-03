@@ -37,6 +37,14 @@ void ui::Slider::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 	}
 }
 
+void ui::Slider::BeginPlay()
+{
+	if (m_hasCustomBeginPlayFunction)
+	{
+		m_beginPlayFunction(this);
+	}
+}
+
 void ui::Slider::Update(const sf::RenderWindow& window)
 {
 	if (m_pressed)
@@ -81,11 +89,16 @@ void ui::Slider::Draw(sf::RenderWindow& window)
 	window.draw(m_slider);
 }
 
-ui::Slider* ui::Slider::setUpdateFunction(const std::function<void(Slider* self)>& function)
+void ui::Slider::SetUpdateFunction(const std::function<void(Slider* self)>& function)
 {
 	m_hasCustomUpdateFunction = true;
 	m_updateFunction = function;
-	return this;
+}
+
+void ui::Slider::SetBeginPlayFunction(const std::function<void(Slider* self)>& function)
+{
+	m_hasCustomBeginPlayFunction = true;
+	m_beginPlayFunction = function;
 }
 
 void ui::Slider::SetValue(const float& value)

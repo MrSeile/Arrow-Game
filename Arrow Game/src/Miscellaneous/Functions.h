@@ -1,10 +1,11 @@
 #pragma once
 
+#define m_FUNCTIONS
+
 #include "..\Global.h"
 #include "..\Game\World.h"
-#include "..\Game\Controller.h"
-#include "..\Game\Rocket.h"
 #include "..\Game\Settings.h"
+#include "..\Game\Controller.h"
 
 #define mapf map<float>
 

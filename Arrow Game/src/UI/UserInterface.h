@@ -1,11 +1,12 @@
 #pragma once
 
+#define m_USERINTERFACE
+
 #include "..\Global.h"
-#include "Widget.h"
-#include "..\Game\Rocket.h"
-#include "..\Game\Controller.h"
-#include "..\Game\World.h"
 #include "..\Miscellaneous\Functions.h"
+#include "Widget.h"
+#include "..\Game\Controller.h"
+#include "..\Game\Rocket.h"
 
 class UserInterface
 {
@@ -28,6 +29,7 @@ public:
 	void Update(const State& state, sf::RenderWindow& window);
 	void Draw(const State& state, sf::RenderWindow& window);
 	void CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& window, const sf::Event& e);
+	void BeginPlay(Controller& ctr);
 
 	float zoom;
 
@@ -37,4 +39,3 @@ public:
 	Widget* GetPlayWidget();
 	Widget* GetFinishWidget();
 };
-

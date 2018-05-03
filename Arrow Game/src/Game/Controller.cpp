@@ -6,9 +6,10 @@ Controller::Controller()
 	level = 0;
 }
 
-void Controller::SetState(const State& newState)
+void Controller::SetState(const State& newState/*, UserInterface& UI*/)
 {
 	m_state = newState;
+	//UI.BeginPlay(*this);
 }
 
 const State& Controller::GetState()

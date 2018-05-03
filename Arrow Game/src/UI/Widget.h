@@ -1,10 +1,12 @@
 #pragma once
 
+#define m_WIDGET
+
 #include "..\Global.h"
 #include "Button.h"
-#include "Text.h"
-#include "Sprite.h"
 #include "Slider.h"
+#include "Sprite.h"
+#include "Text.h"
 
 class Widget
 {
@@ -22,6 +24,7 @@ public:
 	void Update(const sf::RenderWindow& window);
 	void CheckInput(const sf::RenderWindow& window, const sf::Event& e);
 	void Draw(sf::RenderWindow& window);
+	void BeginPlay();
 	void Clear();
 
 	ui::Slider* AddSlider(ui::Slider* newSlider);

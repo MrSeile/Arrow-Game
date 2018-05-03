@@ -12,9 +12,10 @@
 
 #include "Global.h"
 #include "Miscellaneous\Functions.h"
-#include "Game\Rocket.h"
 #include "UI\UserInterface.h"
+#include "Game\Controller.h"
 #include "Game\Settings.h"
+#include "Game\Rocket.h"
 
 int main()
 {
@@ -129,7 +130,6 @@ int main()
 		}
 	});
 
-
 	// Main loop
 	while (window.isOpen())
 	{
@@ -171,6 +171,7 @@ int main()
 			{
 				r.Reset(*ctr.cWorld);
 				ctr.SetState(State::Pause);
+				UI.BeginPlay(ctr);
 				continue;
 			}
 
@@ -179,11 +180,13 @@ int main()
 			{
 				r.Reset(*ctr.cWorld);
 				ctr.SetState(State::Pause);
+				UI.BeginPlay(ctr);
 				continue;
 			}
 			if (ctr.cWorld->levelImg.getPixel((uint)r.pos.x, (uint)r.pos.y) == ctr.cWorld->goalColor)
 			{
 				ctr.SetState(State::End);
+				UI.BeginPlay(ctr);
 				ctr.cWorld->completed = 1;
 
 				if (ctr.cWorld->currentT < ctr.cWorld->record)
@@ -213,7 +216,7 @@ int main()
 		r.Draw(window);
 
 		// Set the camera center to the arrow position
-		//UI.zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x;
+		UI.zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x;
 
 		view.setCenter(r.pos);
 		view.setSize(window.getSize().x * UI.zoom, window.getSize().y * UI.zoom);

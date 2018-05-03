@@ -1,5 +1,7 @@
 #pragma once
 
+#define m_WORLD
+
 #include "..\Global.h"
 
 
