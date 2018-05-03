@@ -1,0 +1,57 @@
+SETTINGS
+{
+	Pink
+	265
+	1750
+	-60
+}
+TIME
+{
+	17
+	15
+	13
+	11
+}
+IMAGE
+{
+	levels/Pink/Pink.png
+}
+NEXTLEVEL
+{
+	levels/Hexagon/Hexagon.scn
+}
+ROCOLOR
+{
+	255
+	0
+	0
+	255
+}
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
+OCOLOR
+{
+	30
+	172
+	255
+	255
+}
+GCOLOR
+{
+	33
+	255
+	0
+	255
+}
+BCOLOR
+{
+	30
+	172
+	255
+	255
+}
