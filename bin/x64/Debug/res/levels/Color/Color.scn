@@ -1,0 +1,57 @@
+SETTINGS
+{
+	Color_Changed
+	189
+	447
+	0
+}
+TIME
+{
+	50
+	20
+	18
+	15
+}
+IMAGE
+{
+	levels/Color/Color.png
+}
+NEXTLEVEL
+{
+	levels/DeathStar/DeathStar.scn
+}
+ROCOLOR
+{
+	0
+	0
+	0
+	255
+}
+RCOLOR
+{
+	255
+	255
+	255
+	255
+}
+OCOLOR
+{
+	0
+	128
+	128
+	255
+}
+GCOLOR
+{
+	0
+	255
+	0
+	255
+}
+BCOLOR
+{
+	0
+	128
+	128
+	255
+}
