@@ -99,7 +99,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		b->text.setString(w.id);
 		b->text.setCharacterSize(20);
 		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
-		b->SetAble(w.able);
+
+		b->SetBeginPlayFunction([&](ui::Button* self)
+		{
+			self->SetAble(w.able);
+		});
 
 		b->SetUpdateFunction([&](ui::Button* self)
 		{

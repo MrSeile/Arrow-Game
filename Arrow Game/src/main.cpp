@@ -3,7 +3,7 @@
 *	Author:		Elies Bertran Roca
 *	Date:		30/04/2018
 *	Version:	1.7
-*	Revision:	001
+*	Revision:	003
 */
 
 #ifndef _DEBUG
@@ -36,8 +36,7 @@ int main()
 
 	// Load the settings from file
 	LoadSettings(ctr.settings);
-	ctr.settings.SetFullscreen(false);
-	ctr.settings.SetAntialiasingLevel(8);
+	ctr.settings.SetAntialiasingLevel(16);
 
 	// Rocket "Player"
 	Rocket r;
