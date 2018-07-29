@@ -51,7 +51,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	{
 		auto self = dynamic_cast<ui::Text*>(obj);
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int((window.getSize().x) - (self->getGlobalBounds().width / zoom) - (20 / zoom))), int((window.getSize().y) - (self->getGlobalBounds().height / zoom) - (40 / zoom)))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(((int)((window.getSize().x) - (self->getGlobalBounds().width / zoom) - (20 / zoom))), (int)((window.getSize().y) - (self->getGlobalBounds().height / zoom) - (40 / zoom)))));
 	});
 	m_menu->AddObject(title);
 
@@ -66,7 +66,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
 
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - int(self->shape.getSize().x / zoom) - int(10 / zoom), int(10 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x / zoom) - (int)(10 / zoom), (int)(10 / zoom))));
 	});
 
 	quitB->SetClickFunction([&](ui::UIObject* obj)
@@ -89,7 +89,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
 
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), window.getSize().y - int(self->shape.getSize().y / zoom) - int(10 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), window.getSize().y - (int)(self->shape.getSize().y / zoom) - (int)(10 / zoom))));
 	});
 
 	optionsBut->SetClickFunction([&](ui::UIObject* obj)
@@ -126,7 +126,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 				sf::Vector2f newPos(prev->GetPosition().x + prev->shape.getSize().x + 6, prev->GetPosition().y);
 
-				if (newPos.y == window.mapPixelToCoords(sf::Vector2i(0, int(10 / zoom))).y)
+				if (newPos.y == window.mapPixelToCoords(sf::Vector2i(0, (int)(10 / zoom))).y)
 				{
 					sf::Vector2i quitPos = window.mapCoordsToPixel(m_menu->GetButton("quitButton")->GetPosition());
 
@@ -136,7 +136,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 					}
 					else
 					{
-						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), 0)).x, newPos.y + 40);
+						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), 0)).x, newPos.y + 40);
 					}
 				}
 				else
@@ -147,13 +147,13 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 					}
 					else
 					{
-						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), 0)).x, newPos.y + 40);
+						self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), 0)).x, newPos.y + 40);
 					}
 				}
 			}
 			else
 			{
-				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), int(10 / zoom))));
+				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), (int)(10 / zoom))));
 			}
 
 			if (w.completed = 1)
@@ -201,7 +201,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	audioText->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Text*>(obj);
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(50 / zoom), int(100 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(50 / zoom), (int)(100 / zoom))));
 	});
 	
 	m_options->AddObject(audioText);
@@ -279,7 +279,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	backBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), window.getSize().y - int(40 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), window.getSize().y - (int)(40 / zoom))));
 	});
 
 	backBut->SetClickFunction([&](ui::UIObject* obj)
@@ -325,7 +325,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	applyBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x / zoom) - int(10 / zoom), window.getSize().y - int(40 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x / zoom) - (int)(10 / zoom), window.getSize().y - (int)(40 / zoom))));
 	});
 
 	applyBut->SetClickFunction([&](ui::UIObject* obj)
@@ -343,8 +343,8 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	acceptBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - int(10 / zoom),
-																		window.getSize().y - int(40 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - (int)(10 / zoom),
+																		window.getSize().y - (int)(40 / zoom))));
 	});
 
 	acceptBut->SetClickFunction([&](ui::UIObject* obj)
@@ -364,7 +364,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	optionsTitle->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Text*>(obj);
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(20 / zoom), int(20 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(20 / zoom), (int)(20 / zoom))));
 	});
 	m_options->AddObject(optionsTitle);
 
@@ -383,7 +383,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	rewardsImg->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Sprite*>(obj);
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - int((70 / zoom)))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - (int)((70 / zoom)))));
 	});
 	m_pause->AddObject(rewardsImg);
 
@@ -403,7 +403,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		self->setString(lTitleText.str().c_str());
 		self->setOrigin(sf::Vector2f(self->getLocalBounds().width / 2.f, 0));
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, int(10 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (int)(10 / zoom))));
 	});
 	m_pause->AddObject(levelTitleP);
 
@@ -420,7 +420,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(goldT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(230 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (int)(230 / zoom), (int)(window.getSize().y) - (int)(90 / zoom))));
 	});
 	m_pause->AddObject(goldT);
 
@@ -437,7 +437,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(silverT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(25 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (int)(25 / zoom), (int)(window.getSize().y) - (int)(90 / zoom))));
 	});
 	m_pause->AddObject(silverT);
 
@@ -454,7 +454,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(bronzeT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + int(190 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + (int)(190 / zoom), (int)(window.getSize().y) - (int)(90 / zoom))));
 	});
 	m_pause->AddObject(bronzeT);
 
@@ -480,7 +480,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(t_record.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(400 / zoom), (int)(window.getSize().y) - int(95 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - (int)(400 / zoom), (int)(window.getSize().y) - (int)(95 / zoom))));
 	});
 	m_pause->AddObject(recordT);
 
@@ -506,7 +506,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(currentT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(5 / zoom), int(5 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(5 / zoom), (int)(5 / zoom))));
 	});
 	m_play->AddObject(currentT);
 
@@ -548,7 +548,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		}
 
 		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - int(55 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - (int)(55 / zoom))));
 	});
 	m_finish->AddObject(newRecordT);
 
@@ -567,7 +567,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		self->setString(lTitleText.str().c_str());
 		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - int(120 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - (int)(120 / zoom))));
 	});
 	m_finish->AddObject(levelTitleF);
 
@@ -619,7 +619,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	nextB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + int(88 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + (int)(88 / zoom), (window.getSize().y / 2) + (int)(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddObject(nextB);
@@ -641,7 +641,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	resetB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - int(45 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - (int)(45 / zoom), (window.getSize().y / 2) + (int)(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddObject(resetB);
@@ -662,11 +662,10 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	menuB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - int(186 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - (int)(186 / zoom), (window.getSize().y / 2) + (int)(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
 	m_finish->AddObject(menuB);
-
 
 
 	////////////////////////
