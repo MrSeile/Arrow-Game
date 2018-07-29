@@ -9,36 +9,15 @@ Widget::~Widget()
 {
 }
 
-// Add objects
-ui::Sprite* Widget::AddSprite(ui::Sprite* newSprite)
-{
-	m_sprites.push_back(newSprite);
-	return m_sprites.back();
-}
-
-ui::Button* Widget::AddButton(ui::Button* newButton)
-{
-	m_buttons.push_back(newButton);
-	return m_buttons.back();
-}
-
-ui::Text* Widget::AddText(ui::Text* newText)
-{
-	m_texts.push_back(newText);
-	return m_texts.back();
-}
-
-ui::Slider* Widget::AddSlider(ui::Slider* newSlider)
-{
-	m_sliders.push_back(newSlider);
-	return m_sliders.back();
-}
-
 // Getters
 ui::Button* Widget::GetButton(const std::string& id)
 {
-	for (ui::Button* b : m_buttons)
+	for (ui::UIObject* x : m_objects)
 	{
+		auto b = dynamic_cast<ui::Button*>(x);
+		if (!b)
+			continue;
+		
 		if (b->id == id)
 		{
 			return b;
@@ -49,11 +28,15 @@ ui::Button* Widget::GetButton(const std::string& id)
 
 ui::Text* Widget::GetText(const std::string& id)
 {
-	for (ui::Text* t : m_texts)
+	for (ui::UIObject* x : m_objects)
 	{
-		if (t->id == id)
+		auto b = dynamic_cast<ui::Text*>(x);
+		if (!b)
+			continue;
+		
+		if (b->id == id)
 		{
-			return t;
+			return b;
 		}
 	}
 	return nullptr;
@@ -61,11 +44,15 @@ ui::Text* Widget::GetText(const std::string& id)
 
 ui::Sprite* Widget::GetSprite(const std::string& id)
 {
-	for (ui::Sprite* s : m_sprites)
+	for (ui::UIObject* x : m_objects)
 	{
-		if (s->id == id)
+		auto b = dynamic_cast<ui::Sprite*>(x);
+		if (!b)
+			continue;
+
+		if (b->id == id)
 		{
-			return s;
+			return b;
 		}
 	}
 	return nullptr;
@@ -73,11 +60,15 @@ ui::Sprite* Widget::GetSprite(const std::string& id)
 
 ui::Slider* Widget::GetSlider(const std::string& id)
 {
-	for (ui::Slider* s : m_sliders)
+	for (ui::UIObject* x : m_objects)
 	{
-		if (s->id == id)
+		auto b = dynamic_cast<ui::Slider*>(x);
+		if (!b)
+			continue;
+		
+		if (b->id == id)
 		{
-			return s;
+			return b;
 		}
 	}
 	return nullptr;
@@ -86,87 +77,52 @@ ui::Slider* Widget::GetSlider(const std::string& id)
 // Other
 void Widget::Clear()
 {
-	m_buttons.clear();
-	m_texts.clear();
-	m_sprites.clear();
-	m_sliders.clear();
+	m_objects.clear();
+}
+
+void Widget::AddObject(ui::UIObject* newObject)
+{
+	m_objects.push_back(newObject);
 }
 
 void Widget::Draw(sf::RenderWindow& window)
 {
-	for (ui::Sprite* s : m_sprites)
+	for (ui::UIObject* o : m_objects)
 	{
-		s->Draw(window);
-	}
-
-	for (ui::Button* b : m_buttons)
-	{
-		b->Draw(window);
-	}
-
-	for (ui::Text* t : m_texts)
-	{
-		t->Draw(window);
-	}
-
-	for (ui::Slider* s : m_sliders)
-	{
-		s->Draw(window);
+		o->Draw(window);
 	}
 }
 
 void Widget::BeginPlay()
 {
-	for (ui::Button* b : m_buttons)
+	for (ui::UIObject* o : m_objects)
 	{
-		b->BeginPlay();
-	}
-	for (ui::Text* t : m_texts)
-	{
-		t->BeginPlay();
-	}
-	for (ui::Sprite* s : m_sprites)
-	{
-		s->BeginPlay();
-	}
-	for (ui::Slider* s : m_sliders)
-	{
-		s->BeginPlay();
+		o->BeginPlay();
 	}
 }
 
 void Widget::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 {
-	for (ui::Button* b : m_buttons)
+	for (ui::UIObject* o : m_objects)
 	{
-		b->CheckInput(window, e);
-	}
+		ui::Button* b = dynamic_cast<ui::Button*>(o);
+		ui::Slider* s = dynamic_cast<ui::Slider*>(o);
 
-	for (ui::Slider* s : m_sliders)
-	{
-		s->CheckInput(window, e);
+		if (b)
+		{
+			b->CheckInput(window, e);
+		}
+		else if (s)
+		{
+			s->CheckInput(window, e);
+		}
 	}
 }
 
 void Widget::Update(const sf::RenderWindow& window)
 {
-	for (ui::Button* b : m_buttons)
+	for (ui::UIObject* o : m_objects)
 	{
-		b->Update(window);
-	}
-
-	for (ui::Text* t : m_texts)
-	{
-		t->Update(window);
-	}
-
-	for (ui::Sprite* s : m_sprites)
-	{
-		s->Update(window);
-	}
-
-	for (ui::Slider* s : m_sliders)
-	{
-		s->Update(window);
+		o->Update(window);
 	}
 }

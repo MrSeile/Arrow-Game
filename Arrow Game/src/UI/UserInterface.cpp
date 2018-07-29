@@ -28,14 +28,16 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	menuImg->setTexture(*menuImg_t);
 	menuImg->setOrigin(sf::Vector2f(menuImg->getLocalBounds().width / 2.f, menuImg->getLocalBounds().height / 2.f));
 
-	menuImg->SetUpdateFunction([&](ui::Sprite* self)
+	menuImg->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Sprite*>(obj);
+
 		self->setScale(((float)(window.getSize().x * zoom) / (float)self->getTexture()->getSize().x), ((float)(window.getSize().y * zoom) / (float)self->getTexture()->getSize().y));
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});
-	m_menu->AddSprite(menuImg);
-	m_options->AddSprite(menuImg);
+	m_menu->AddObject(menuImg);
+	m_options->AddObject(menuImg);
 
 	// Texts
 	ui::Text* title = new ui::Text("title");
@@ -45,11 +47,13 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	title->setString("Arrow Game");
 	title->setCharacterSize(100U);
 
-	title->SetUpdateFunction([&](ui::Text* self)
+	title->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
+
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int((window.getSize().x) - (self->getGlobalBounds().width / zoom) - (20 / zoom))), int((window.getSize().y) - (self->getGlobalBounds().height / zoom) - (40 / zoom)))));
 	});
-	m_menu->AddText(title);
+	m_menu->AddObject(title);
 
 	// Buttons
 	ui::Button* quitB = new ui::Button("quitButton");
@@ -58,12 +62,14 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	quitB->text.setString("X");
 	quitB->shape.setSize(sf::Vector2f(30, 30));
 
-	quitB->SetUpdateFunction([&](ui::Button* self)
+	quitB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
+
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - int(self->shape.getSize().x / zoom) - int(10 / zoom), int(10 / zoom))));
 	});
 
-	quitB->SetClickFunction([&](ui::Button* self)
+	quitB->SetClickFunction([&](ui::UIObject* obj)
 	{
 		if (MessageBox(NULL, "Are you sure?", "WARNING", MB_YESNO) == IDYES)
 		{
@@ -71,7 +77,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		}
 	});
 
-	m_menu->AddButton(quitB);
+	m_menu->AddObject(quitB);
 
 	ui::Button* optionsBut = new ui::Button("OptionsBut");
 	optionsBut->text.setFont(m_font);
@@ -79,17 +85,20 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	optionsBut->text.setCharacterSize(20);
 	optionsBut->shape.setSize(sf::Vector2f(optionsBut->text.getGlobalBounds().width + 20, 30));
 
-	optionsBut->SetUpdateFunction([&](ui::Button* self)
+	optionsBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
+
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), window.getSize().y - int(self->shape.getSize().y / zoom) - int(10 / zoom))));
 	});
 
-	optionsBut->SetClickFunction([&](ui::Button* self)
+	optionsBut->SetClickFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		ctr.SetState(State::Options);
 		BeginPlay(ctr);
 	});
-	m_menu->AddButton(optionsBut);
+	m_menu->AddObject(optionsBut);
 
 
 	for (World& w : ctr.worlds)
@@ -100,13 +109,15 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		b->text.setCharacterSize(20);
 		b->shape.setSize(sf::Vector2f(b->text.getLocalBounds().width + 20, 30));
 
-		b->SetBeginPlayFunction([&](ui::Button* self)
+		b->SetBeginPlayFunction([&](ui::UIObject* obj)
 		{
+			auto self = dynamic_cast<ui::Button*>(obj);
 			self->SetAble(w.able);
 		});
 
-		b->SetUpdateFunction([&](ui::Button* self)
+		b->SetUpdateFunction([&](ui::UIObject* obj)
 		{
+			auto self = dynamic_cast<ui::Button*>(obj);
 			if (self != levelButtons[0])
 			{
 				ptrdiff_t index = std::find(levelButtons.begin(), levelButtons.end(), self) - levelButtons.begin();
@@ -155,8 +166,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 			}
 		});
 
-		b->SetClickFunction([&](ui::Button* self)
+		b->SetClickFunction([&](ui::UIObject* obj)
 		{
+			auto self = dynamic_cast<ui::Button*>(obj);
 			for (World& w : ctr.worlds)
 			{
 				if (self->id == w.id)
@@ -173,7 +185,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 			}
 		});
 
-		m_menu->AddButton(b);
+		m_menu->AddObject(b);
 		levelButtons.push_back(b);
 	}
 
@@ -186,31 +198,34 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	audioText->setCharacterSize(40);
 	audioText->setFillColor(sf::Color::Black);
 	audioText->setString("Audio");
-	audioText->SetUpdateFunction([&](sf::Text* self)
+	audioText->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(50 / zoom), int(100 / zoom))));
 	});
 	
-	m_options->AddText(audioText);
+	m_options->AddObject(audioText);
 
 	// Sliders
 	ui::Slider* audioSlider = new ui::Slider("audio", m_font);
 	audioSlider->SetSize(200, 10);
 	audioSlider->ShowValue();
 
-	audioSlider->SetBeginPlayFunction([&](ui::Slider* self)
+	audioSlider->SetBeginPlayFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Slider*>(obj);
 		self->SetValue(ctr.settings.GetAudioLevel());
 	});
 
-	audioSlider->SetUpdateFunction([&](ui::Slider* self)
+	audioSlider->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Slider*>(obj);
 		ui::Text* audio = m_options->GetText("audioText");
 
 		self->SetSize(300.f, 20.f);
 		self->SetPosition(audio->getPosition().x + 50, audio->getPosition().y + 60);
 	});
-	m_options->AddSlider(audioSlider);
+	m_options->AddObject(audioSlider);
 
 
 	// Sprites
@@ -227,7 +242,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});*/
-	//m_options->AddSprite(optionsBkgd);
+	//m_options->AddObject(optionsBkgd);
 
 	// Buttons
 	/*ui::Button* resB = new ui::Button("Reset");
@@ -253,7 +268,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 			}
 		}
 	});
-	m_options->AddButton(resB);*/
+	m_options->AddObject(resB);*/
 
 	ui::Button* backBut = new ui::Button("OptionsBack");
 	backBut->text.setFont(m_font);
@@ -261,13 +276,15 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	backBut->text.setCharacterSize(20);
 	backBut->shape.setSize(sf::Vector2f(backBut->text.getGlobalBounds().width + 20, 30));
 
-	backBut->SetUpdateFunction([&](ui::Button* self)
+	backBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(int(10 / zoom), window.getSize().y - int(40 / zoom))));
 	});
 
-	backBut->SetClickFunction([&](ui::Button* self)
+	backBut->SetClickFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		if (ctr.settings.GetAudioLevel() != m_options->GetSlider("audio")->GetValue())
 		{
 			switch (MessageBox(NULL, "Do you want to save?", "WARNING", MB_YESNOCANCEL))
@@ -297,7 +314,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 			BeginPlay(ctr);
 		}
 	});
-	m_options->AddButton(backBut);
+	m_options->AddObject(backBut);
 
 	ui::Button* applyBut = new ui::Button("applyBut");
 	applyBut->text.setFont(m_font);
@@ -305,16 +322,17 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	applyBut->text.setCharacterSize(20);
 	applyBut->shape.setSize(sf::Vector2f(backBut->text.getGlobalBounds().width + 20, 30));
 
-	applyBut->SetUpdateFunction([&](ui::Button* self)
+	applyBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x - (int)(self->shape.getSize().x / zoom) - int(10 / zoom), window.getSize().y - int(40 / zoom))));
 	});
 
-	applyBut->SetClickFunction([&](ui::Button* self)
+	applyBut->SetClickFunction([&](ui::UIObject* obj)
 	{
 		Apply(ctr);
 	});
-	m_options->AddButton(applyBut);
+	m_options->AddObject(applyBut);
 
 	ui::Button* acceptBut = new ui::Button("acceptBut");
 	acceptBut->text.setFont(m_font);
@@ -322,19 +340,20 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	acceptBut->text.setCharacterSize(20);
 	acceptBut->shape.setSize(sf::Vector2f(acceptBut->text.getGlobalBounds().width + 20, 30));
 
-	acceptBut->SetUpdateFunction([&](ui::Button* self)
+	acceptBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - int(10 / zoom),
 																		window.getSize().y - int(40 / zoom))));
 	});
 
-	acceptBut->SetClickFunction([&](ui::Button* self)
+	acceptBut->SetClickFunction([&](ui::UIObject* obj)
 	{
 		Apply(ctr);
 		ctr.SetState(State::Menu);
 		BeginPlay(ctr);
 	});
-	m_options->AddButton(acceptBut);
+	m_options->AddObject(acceptBut);
 
 	// Texts
 	ui::Text* optionsTitle = new ui::Text("optionsTitle");
@@ -342,11 +361,12 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	optionsTitle->setCharacterSize(50);
 	optionsTitle->setString("Options");
 	optionsTitle->setFillColor(sf::Color::Black);
-	optionsTitle->SetUpdateFunction([&](ui::Text* self)
+	optionsTitle->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(20 / zoom), int(20 / zoom))));
 	});
-	m_options->AddText(optionsTitle);
+	m_options->AddObject(optionsTitle);
 
 	/////////////////////////
 	// PAUSE
@@ -360,11 +380,12 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	rewardsImg->setScale(0.7f, 0.7f);
 	rewardsImg->setOrigin(sf::Vector2f(rewardsImg->getLocalBounds().width / 2.f, rewardsImg->getLocalBounds().height / 2.f));
 
-	rewardsImg->SetUpdateFunction([&](ui::Sprite* self)
+	rewardsImg->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Sprite*>(obj);
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y - int((70 / zoom)))));
 	});
-	m_pause->AddSprite(rewardsImg);
+	m_pause->AddObject(rewardsImg);
 
 	// Texts
 	ui::Text* levelTitleP = new ui::Text("levelTitleP");
@@ -373,8 +394,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	levelTitleP->setOutlineThickness(1);
 	levelTitleP->setOutlineColor(sf::Color::Black);
 
-	levelTitleP->SetUpdateFunction([&](ui::Text* self)
+	levelTitleP->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream lTitleText;
 		lTitleText << ctr.cWorld->id;
 
@@ -383,31 +405,33 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, int(10 / zoom))));
 	});
-	m_pause->AddText(levelTitleP);
+	m_pause->AddObject(levelTitleP);
 
 	ui::Text* goldT = new ui::Text("goldT");
 	goldT->setFont(m_font);
 	goldT->setFillColor(sf::Color::Black);
 	goldT->setCharacterSize(22);
 
-	goldT->SetUpdateFunction([&](ui::Text* self)
+	goldT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream goldT_t;
 		goldT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.goldT << "s";
 
 		self->setString(goldT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(260 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(230 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
 	});
-	m_pause->AddText(goldT);
+	m_pause->AddObject(goldT);
 
 	ui::Text* silverT = new ui::Text("silverT");
 	silverT->setFont(m_font);
 	silverT->setFillColor(sf::Color::Black);
 	silverT->setCharacterSize(22);
 
-	silverT->SetUpdateFunction([&](ui::Text* self)
+	silverT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream silverT_t;
 		silverT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.silverT << "s";
 
@@ -415,23 +439,24 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(25 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
 	});
-	m_pause->AddText(silverT);
+	m_pause->AddObject(silverT);
 
 	ui::Text* bronzeT = new ui::Text("bronzeT");
 	bronzeT->setFont(m_font);
 	bronzeT->setFillColor(sf::Color::Black);
 	bronzeT->setCharacterSize(22);
 
-	bronzeT->SetUpdateFunction([&](ui::Text* self)
+	bronzeT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream bronzeT_t;
 		bronzeT_t << std::fixed << std::setprecision(3) << ctr.cWorld->time.bronzeT << "s";
 
 		self->setString(bronzeT_t.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + int(210 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) + int(190 / zoom), (int)(window.getSize().y) - int(90 / zoom))));
 	});
-	m_pause->AddText(bronzeT);
+	m_pause->AddObject(bronzeT);
 
 	ui::Text* recordT = new ui::Text("recordT");
 	recordT->setFont(m_font);
@@ -440,8 +465,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	recordT->setOutlineColor(sf::Color::White);
 	recordT->setCharacterSize(20);
 
-	recordT->SetUpdateFunction([&](ui::Text* self)
+	recordT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream t_record;
 		if ((int)ctr.cWorld->record != NO_RECORD)
 		{
@@ -454,9 +480,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setString(t_record.str().c_str());
 
-		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(430 / zoom), (int)(window.getSize().y) - int(95 / zoom))));
+		self->setPosition(window.mapPixelToCoords(sf::Vector2i((int)(window.getSize().x / 2) - int(400 / zoom), (int)(window.getSize().y) - int(95 / zoom))));
 	});
-	m_pause->AddText(recordT);
+	m_pause->AddObject(recordT);
 
 	/////////////////
 	// Playing
@@ -467,8 +493,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	currentT->setOutlineThickness(2);
 	currentT->setOutlineColor(sf::Color::White);
 
-	currentT->SetUpdateFunction([&](ui::Text* self)
+	currentT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		self->setFillColor({ 255, 200,   0 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	self->setFillColor({ 210, 210, 210 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	self->setFillColor({ 165, 113, 100 });
@@ -481,7 +508,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(int(5 / zoom), int(5 / zoom))));
 	});
-	m_play->AddText(currentT);
+	m_play->AddObject(currentT);
 
 	/////////////////
 	// End
@@ -495,11 +522,12 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	winSpr->setScale(0.5f, 0.5f);
 	winSpr->setOrigin(winSpr->getLocalBounds().width / 2.f, winSpr->getLocalBounds().height / 2.f);
 
-	winSpr->SetUpdateFunction([&](ui::Sprite* self)
+	winSpr->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Sprite*>(obj);
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});
-	m_finish->AddSprite(winSpr);
+	m_finish->AddObject(winSpr);
 
 	// Texts
 	ui::Text* newRecordT = new ui::Text("newRecord");
@@ -507,8 +535,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	newRecordT->setCharacterSize(30);
 	newRecordT->setFillColor(sf::Color::Black);
 
-	newRecordT->SetUpdateFunction([&](ui::Text* self)
+	newRecordT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		if (ctr.cWorld->currentT == ctr.cWorld->record)
 		{
 			self->setString("NEW RECORD!");
@@ -521,7 +550,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		self->setOrigin(self->getLocalBounds().width / 2.f, 0);
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - int(55 / zoom))));
 	});
-	m_finish->AddText(newRecordT);
+	m_finish->AddObject(newRecordT);
 
 	ui::Text* levelTitleF = new ui::Text("levelTitleF");
 	levelTitleF->setFont(m_font);
@@ -529,8 +558,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	levelTitleF->setOutlineThickness(1);
 	levelTitleF->setOutlineColor(sf::Color::Black);
 
-	levelTitleF->SetUpdateFunction([&](ui::Text* self)
+	levelTitleF->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		std::stringstream lTitleText;
 		lTitleText << ctr.cWorld->id;
 
@@ -539,15 +569,16 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, (window.getSize().y / 2) - int(120 / zoom))));
 	});
-	m_finish->AddText(levelTitleF);
+	m_finish->AddObject(levelTitleF);
 
 	ui::Text* finalT = new ui::Text("finalT");
 	finalT->setFont(m_font);
 	finalT->setOutlineThickness(1);
 	finalT->setOutlineColor(sf::Color::Black);
 
-	finalT->SetUpdateFunction([&](ui::Text* self)
+	finalT->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Text*>(obj);
 		if		(ctr.cWorld->currentT < ctr.cWorld->time.goldT)		self->setFillColor({ 255, 200,   0 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.silverT)	self->setFillColor({ 210, 210, 210 });
 		else if (ctr.cWorld->currentT < ctr.cWorld->time.bronzeT)	self->setFillColor({ 165, 113, 100 });
@@ -562,7 +593,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 		self->setPosition(window.mapPixelToCoords(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2)));
 	});
-	m_finish->AddText(finalT);
+	m_finish->AddObject(finalT);
 
 	// BUTTONS
 	ui::Button* nextB = new ui::Button("nextB");
@@ -571,8 +602,9 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	nextB->text.setCharacterSize(15);
 	nextB->shape.setSize(sf::Vector2f(100, 45));
 
-	nextB->SetClickFunction([&](ui::Button* self)
+	nextB->SetClickFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		if (ctr.worlds[ctr.level].NextLevel != "NULL")
 		{
 			ctr.SetState(State::Pause);
@@ -584,12 +616,13 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		}
 	});
 
-	nextB->SetUpdateFunction([&](ui::Button* self)
+	nextB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) + int(88 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
-	m_finish->AddButton(nextB);
+	m_finish->AddObject(nextB);
 
 	ui::Button* resetB = new ui::Button("resetB");
 	resetB->text.setFont(m_font);
@@ -597,7 +630,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	resetB->text.setCharacterSize(15);
 	resetB->shape.setSize(sf::Vector2f(100, 45));
 
-	resetB->SetClickFunction([&](ui::Button* self)
+	resetB->SetClickFunction([&](ui::UIObject* obj)
 	{
 		ctr.SetState(State::Pause);
 		BeginPlay(ctr);
@@ -605,12 +638,13 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 		ctr.cWorld->timer.restart();
 	});
 
-	resetB->SetUpdateFunction([&](ui::Button* self)
+	resetB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - int(45 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
-	m_finish->AddButton(resetB);
+	m_finish->AddObject(resetB);
 
 	ui::Button* menuB = new ui::Button("menuB");
 	menuB->text.setFont(m_font);
@@ -618,19 +652,20 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	menuB->text.setCharacterSize(15);
 	menuB->shape.setSize(sf::Vector2f(100, 45));
 
-	menuB->SetClickFunction([&](ui::Button* self)
+	menuB->SetClickFunction([&](ui::UIObject* obj)
 	{
 		ctr.SetState(State::Menu);
 		BeginPlay(ctr);
 		r.Reset(*ctr.cWorld);
 	});
 
-	menuB->SetUpdateFunction([&](ui::Button* self)
+	menuB->SetUpdateFunction([&](ui::UIObject* obj)
 	{
+		auto self = dynamic_cast<ui::Button*>(obj);
 		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((window.getSize().x / 2) - int(186 / zoom), (window.getSize().y / 2) + int(71 / zoom))));
 		self->text.setPosition(self->shape.getPosition().x + 5, self->shape.getPosition().y + 2);
 	});
-	m_finish->AddButton(menuB);
+	m_finish->AddObject(menuB);
 
 
 

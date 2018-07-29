@@ -16,10 +16,7 @@ public:
 	Widget();
 	~Widget();
 
-	std::vector<ui::Button*> m_buttons;
-	std::vector<ui::Text*> m_texts;
-	std::vector<ui::Sprite*> m_sprites;
-	std::vector<ui::Slider*> m_sliders;
+	std::vector<ui::UIObject*> m_objects;
 
 	void Update(const sf::RenderWindow& window);
 	void CheckInput(const sf::RenderWindow& window, const sf::Event& e);
@@ -27,15 +24,10 @@ public:
 	void BeginPlay();
 	void Clear();
 
-	ui::Slider* AddSlider(ui::Slider* newSlider);
+	void AddObject(ui::UIObject* newObject);
+
 	ui::Slider* GetSlider(const std::string& id);
-
-	ui::Sprite* AddSprite(ui::Sprite* newSprite);
 	ui::Sprite* GetSprite(const std::string& id);
-
-	ui::Button* AddButton(ui::Button* newButton);
 	ui::Button* GetButton(const std::string& id);
-
-	ui::Text* AddText(ui::Text* newText);
 	ui::Text* GetText(const std::string& id);
 };

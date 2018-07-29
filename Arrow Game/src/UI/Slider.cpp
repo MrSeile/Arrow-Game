@@ -1,7 +1,7 @@
 #include "Slider.h"
 
 ui::Slider::Slider(const std::string& id, const sf::Font& font)
-	: id(id)
+	: UIObject(id)
 {
 	m_body.setFillColor(sf::Color::White);
 	m_body.setOutlineColor(sf::Color::Black);
@@ -34,14 +34,6 @@ void ui::Slider::CheckInput(const sf::RenderWindow& window, const sf::Event& e)
 		{
 			m_pressed = false;
 		}
-	}
-}
-
-void ui::Slider::BeginPlay()
-{
-	if (m_hasCustomBeginPlayFunction)
-	{
-		m_beginPlayFunction(this);
 	}
 }
 
@@ -89,18 +81,6 @@ void ui::Slider::Draw(sf::RenderWindow& window)
 	window.draw(m_slider);
 }
 
-void ui::Slider::SetUpdateFunction(const std::function<void(Slider* self)>& function)
-{
-	m_hasCustomUpdateFunction = true;
-	m_updateFunction = function;
-}
-
-void ui::Slider::SetBeginPlayFunction(const std::function<void(Slider* self)>& function)
-{
-	m_hasCustomBeginPlayFunction = true;
-	m_beginPlayFunction = function;
-}
-
 void ui::Slider::SetValue(const float& value)
 {
 	m_value = value;
@@ -134,11 +114,6 @@ void ui::Slider::ShowValue()
 void ui::Slider::HideValue()
 {
 	m_showValue = false;
-}
-
-std::function<void(ui::Slider*self)> ui::Slider::getUpdateFunction()
-{
-	return m_updateFunction;
 }
 
 float ui::Slider::GetValue()

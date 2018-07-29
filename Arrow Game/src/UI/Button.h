@@ -3,18 +3,15 @@
 #define m_BUTTON
 
 #include "..\Global.h"
+#include "UIObject.h"
 
 namespace ui
 {
-	class Button
+	class Button : public ui::UIObject
 	{
 	private:
-		std::function<void(Button* self)> m_clickFunction;
-		std::function<void(Button* self)> m_updateFunction;
-		std::function<void(Button* self)> m_beginPlayFunction;
+		std::function<void(ui::UIObject* self)> m_clickFunction;
 
-		bool m_hasCustomUpdateFunction = false;
-		bool m_hasCustomBeginPlayFunction = false;
 		bool m_hasClickFuncion = false;
 		bool m_able = true;
 
@@ -24,26 +21,21 @@ namespace ui
 
 		// Generals
 		void CheckInput(const sf::RenderWindow& window, const sf::Event& e);
-		void Update(const sf::RenderWindow& window);
-		void Draw(sf::RenderWindow& window);
-		void BeginPlay();
+		void Update(const sf::RenderWindow& window) override;
+		void Draw(sf::RenderWindow& window) override;
 
 		// Set
-		void SetClickFunction(const std::function<void(Button* self)>& function);
-		void SetUpdateFunction(const std::function<void(Button* self)>& function);
-		void SetBeginPlayFunction(const std::function<void(Button* self)>& function);
+		void SetClickFunction(const std::function<void(ui::UIObject* self)>& function);
 		void SetAble(const bool& able);
 
 		// Get
 		bool GetAble();
 		std::function<void(Button* self)> GetClickEvent();
-		std::function<void(Button* self)> GetUpdateFunction();
 		sf::Vector2f GetPosition();
 
 		// Variables
 		sf::Text text;
 		sf::RectangleShape shape;
-		const std::string id;
 	};
 
 }

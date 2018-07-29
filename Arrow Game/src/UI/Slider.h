@@ -3,18 +3,14 @@
 #define m_SLIDER
 
 #include "..\Global.h"
+#include "UIObject.h"
 #include "..\Miscellaneous\Functions.h"
 
 namespace ui
 {
-	class Slider
+	class Slider : public ui::UIObject
 	{
 	private:
-		std::function<void(Slider* self)> m_updateFunction;
-		std::function<void(Slider* self)> m_beginPlayFunction;
-
-		bool m_hasCustomUpdateFunction = false;
-		bool m_hasCustomBeginPlayFunction = false;
 		bool m_pressed = false;
 		float m_value = 0;
 		float m_offset = 0;
@@ -29,13 +25,10 @@ namespace ui
 
 		// General
 		void CheckInput(const sf::RenderWindow& window, const sf::Event& e);
-		void Update(const sf::RenderWindow& window);
-		void Draw(sf::RenderWindow& window);
-		void BeginPlay();
+		void Update(const sf::RenderWindow& window) override;
+		void Draw(sf::RenderWindow& window) override;
 
 		// Set
-		void SetUpdateFunction(const std::function<void(Slider* self)>& function);
-		void SetBeginPlayFunction(const std::function<void(Slider* self)>& function);
 		void SetValue(const float& value);
 		void SetPosition(const sf::Vector2f& position);
 		void SetPosition(const float& x, const float& y);
@@ -46,10 +39,7 @@ namespace ui
 		void HideValue();
 
 		// Get
-		std::function<void(Slider* self)> getUpdateFunction();
 		float GetValue();
 		bool IsPressed();
-
-		const std::string id;
 	};
 }

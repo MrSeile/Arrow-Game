@@ -36,7 +36,6 @@ int main()
 
 	// Load the settings from file
 	LoadSettings(ctr.settings);
-	ctr.settings.SetAntialiasingLevel(16);
 
 	// Rocket "Player"
 	Rocket r;
@@ -73,8 +72,13 @@ int main()
 
 				if (ctr.GetState() == State::Options)
 				{
-					for (ui::Slider* s : UI.GetOptionsWidget()->m_sliders)
+					for (ui::UIObject* x : UI.GetOptionsWidget()->m_objects)
 					{
+						auto s = dynamic_cast<ui::Slider*>(x);
+						if (!s)
+						{
+							continue;
+						}
 						if (s->IsPressed())
 						{
 							pressed = true;

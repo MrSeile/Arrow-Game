@@ -31,6 +31,7 @@
     <ClInclude Include="src\UI\UserInterface.h" />
     <ClInclude Include="src\UI\Widget.h" />
     <ClInclude Include="src\Game\World.h" />
+    <ClInclude Include="src\UI\UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Settings.cpp" />
@@ -45,6 +46,7 @@
     <ClCompile Include="src\UI\UserInterface.cpp" />
     <ClCompile Include="src\UI\Widget.cpp" />
     <ClCompile Include="src\Game\World.cpp" />
+    <ClCompile Include="src\UI\UIObject.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44D12EDC-BB49-4908-8443-DF93BDFF0A43}</ProjectGuid>

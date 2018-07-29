@@ -1,7 +1,7 @@
 #include "Button.h"
 
 ui::Button::Button(const std::string& id)
-	: id(id)
+	: UIObject(id)
 {
 	text.setFillColor(sf::Color::Black);
 	text.setCharacterSize(10);
@@ -35,22 +35,10 @@ void ui::Button::Update(const sf::RenderWindow& window)
 	}
 }
 
-void ui::Button::SetClickFunction(const std::function<void(Button* self)>& function)
+void ui::Button::SetClickFunction(const std::function<void(ui::UIObject* self)>& function)
 {
 	m_hasClickFuncion = true;
 	m_clickFunction = function;
-}
-
-void ui::Button::SetUpdateFunction(const std::function<void(Button* self)>& function)
-{
-	m_hasCustomUpdateFunction = true;
-	m_updateFunction = function;
-}
-
-void ui::Button::SetBeginPlayFunction(const std::function<void(Button*self)>& function)
-{
-	m_hasCustomBeginPlayFunction = true;
-	m_beginPlayFunction = function;
 }
 
 bool ui::Button::GetAble()
@@ -74,21 +62,9 @@ std::function<void(ui::Button* self)> ui::Button::GetClickEvent()
 	return m_clickFunction;
 }
 
-std::function<void(ui::Button* self)> ui::Button::GetUpdateFunction()
-{
-	return m_updateFunction;
-}
 
 void ui::Button::Draw(sf::RenderWindow& window)
 {
 	window.draw(shape);
 	window.draw(text);
-}
-
-void ui::Button::BeginPlay()
-{
-	if (m_hasCustomBeginPlayFunction)
-	{
-		m_beginPlayFunction(this);
-	}
 }
