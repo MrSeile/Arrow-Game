@@ -20,63 +20,56 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game\Settings.h" />
-    <ClInclude Include="src\UI\Slider.h" />
     <ClInclude Include="src\Game\Controller.h" />
     <ClInclude Include="src\Global.h" />
     <ClInclude Include="src\Miscellaneous\Functions.h" />
     <ClInclude Include="src\Game\Rocket.h" />
-    <ClInclude Include="src\UI\Button.h" />
-    <ClInclude Include="src\UI\Sprite.h" />
-    <ClInclude Include="src\UI\Text.h" />
     <ClInclude Include="src\UI\UserInterface.h" />
-    <ClInclude Include="src\UI\Widget.h" />
     <ClInclude Include="src\Game\World.h" />
-    <ClInclude Include="src\UI\UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Settings.cpp" />
-    <ClCompile Include="src\UI\Slider.cpp" />
     <ClCompile Include="src\Game\Controller.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Game\Rocket.cpp" />
     <ClCompile Include="src\Miscellaneous\Functions.cpp" />
-    <ClCompile Include="src\UI\Button.cpp" />
-    <ClCompile Include="src\UI\Sprite.cpp" />
-    <ClCompile Include="src\UI\Text.cpp" />
     <ClCompile Include="src\UI\UserInterface.cpp" />
-    <ClCompile Include="src\UI\Widget.cpp" />
     <ClCompile Include="src\Game\World.cpp" />
-    <ClCompile Include="src\UI\UIObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\UITools\UITools.vcxproj">
+      <Project>{b545bb43-3e93-4876-9d6d-1beb1e25c1ad}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{44D12EDC-BB49-4908-8443-DF93BDFF0A43}</ProjectGuid>
     <RootNamespace>ArrowGame</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -99,28 +92,33 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)bin\x86\Debug\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)bin\x86\Release\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin\x64\Debug\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)bin\x64\Release\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/SFML x86/include;%(AdditionalIncludeDirectories);$(SolutionDir)LogitechLED\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\UITools;$(SolutionDir)vendor\LogitechLED\Include;$(SolutionDir)vendor\SFML $(PlatformTarget)\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
       <CallingConvention>Cdecl</CallingConvention>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/SFML x86/lib;$(SolutionDir)LogitechLED\Lib\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SFML $(PlatformTarget)\lib;$(SolutionDir)vendor\LogitechLED\Lib\$(PlatformTarget)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);LogitechLEDLib.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>
@@ -132,12 +130,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/SFML x64/include;$(SolutionDir)LogitechLED\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\UITools;$(SolutionDir)vendor\LogitechLED\Include;$(SolutionDir)vendor\SFML $(PlatformTarget)\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);LogitechLEDLib.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/SFML x64/lib;$(SolutionDir)LogitechLED\Lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SFML $(PlatformTarget)\lib;$(SolutionDir)vendor\LogitechLED\Lib\$(PlatformTarget)</AdditionalLibraryDirectories>
       <PerUserRedirection>true</PerUserRedirection>
     </Link>
   </ItemDefinitionGroup>
@@ -148,14 +147,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/SFML x86/include;%(AdditionalIncludeDirectories);$(SolutionDir)LogitechLED\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\UITools;$(SolutionDir)vendor\LogitechLED\Include;$(SolutionDir)vendor\SFML $(PlatformTarget)\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
       <CallingConvention>Cdecl</CallingConvention>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)/SFML x86/lib;$(SolutionDir)LogitechLED\Lib\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SFML $(PlatformTarget)\lib;$(SolutionDir)vendor\LogitechLED\Lib\$(PlatformTarget)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);LogitechLEDLib.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>
@@ -169,13 +169,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/SFML x64/include;$(SolutionDir)LogitechLED\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\UITools;$(SolutionDir)vendor\LogitechLED\Include;$(SolutionDir)vendor\SFML $(PlatformTarget)\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>UI/;Player/;scr/;</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)/SFML x64/lib;$(SolutionDir)LogitechLED\Lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SFML $(PlatformTarget)\lib;$(SolutionDir)vendor\LogitechLED\Lib\$(PlatformTarget)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);LogitechLEDLib.lib</AdditionalDependencies>
       <PerUserRedirection>true</PerUserRedirection>
     </Link>

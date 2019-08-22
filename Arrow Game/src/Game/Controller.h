@@ -1,7 +1,5 @@
 #pragma once
 
-#define m_CONTROLLER
-
 #include "..\Global.h"
 //#include "..\UI\UserInterface.h" //--> EVERYTHING CRASHES!!!
 #include "Settings.h"

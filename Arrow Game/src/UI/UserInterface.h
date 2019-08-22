@@ -1,21 +1,19 @@
 #pragma once
 
-#define m_USERINTERFACE
-
 #include "..\Global.h"
 #include "..\Miscellaneous\Functions.h"
-#include "Widget.h"
+#include <UITools.h>
 #include "..\Game\Controller.h"
 #include "..\Game\Rocket.h"
 
 class UserInterface
 {
 private:
-	Widget* m_menu;
-	Widget* m_options;
-	Widget* m_pause;
-	Widget* m_play;
-	Widget* m_finish;
+	ui::Widget* m_menu;
+	ui::Widget* m_options;
+	ui::Widget* m_pause;
+	ui::Widget* m_play;
+	ui::Widget* m_finish;
 	
 	sf::Font m_font;
 
@@ -33,9 +31,9 @@ public:
 
 	float zoom;
 
-	Widget* GetMenuWidget();
-	Widget* GetOptionsWidget();
-	Widget* GetPauseWidget();
-	Widget* GetPlayWidget();
-	Widget* GetFinishWidget();
+	ui::Widget* GetMenuWidget();
+	ui::Widget* GetOptionsWidget();
+	ui::Widget* GetPauseWidget();
+	ui::Widget* GetPlayWidget();
+	ui::Widget* GetFinishWidget();
 };

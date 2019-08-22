@@ -2,7 +2,7 @@
 
 void UserInterface::Apply(Controller& ctr)
 {
-	ctr.settings.SetAudioLevel(m_options->GetSlider("audio")->GetValue());
+	ctr.settings.SetAudioLevel(m_options->Get<ui::Slider>("audio")->GetValue());
 }
 
 UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr, std::thread& ligthing)
@@ -11,11 +11,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	m_font.loadFromFile("res/font/font.ttf");
 
-	m_menu =	new Widget();
-	m_options = new Widget();
-	m_pause =	new Widget();
-	m_play =	new Widget();
-	m_finish =	new Widget();
+	m_menu =	new ui::Widget();
+	m_options = new ui::Widget();
+	m_pause =	new ui::Widget();
+	m_play =	new ui::Widget();
+	m_finish =	new ui::Widget();
 
 	////////////////////
 	// MENU
@@ -128,7 +128,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 				if (newPos.y == window.mapPixelToCoords(sf::Vector2i(0, (int)(10 / zoom))).y)
 				{
-					sf::Vector2i quitPos = window.mapCoordsToPixel(m_menu->GetButton("quitButton")->GetPosition());
+					sf::Vector2i quitPos = window.mapCoordsToPixel(m_menu->Get<ui::Button>("quitButton")->GetPosition());
 
 					if ((window.mapCoordsToPixel(newPos).x + (self->shape.getSize().x / zoom)) < quitPos.x - (20 / zoom))
 					{
@@ -156,7 +156,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 				self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i((int)(10 / zoom), (int)(10 / zoom))));
 			}
 
-			if (w.completed = 1)
+			if (w.completed == 1)
 			{
 				if		(w.record < w.time.goldT)		self->shape.setFillColor({ 255, 200, 000 });
 				else if (w.record < w.time.silverT)		self->shape.setFillColor({ 210, 210, 210 });
@@ -210,6 +210,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	ui::Slider* audioSlider = new ui::Slider("audio", m_font);
 	audioSlider->SetSize(200, 10);
 	audioSlider->ShowValue();
+	audioSlider->GetText().setFillColor(sf::Color::Black);
 
 	audioSlider->SetBeginPlayFunction([&](ui::UIObject* obj)
 	{
@@ -220,13 +221,16 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	audioSlider->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Slider*>(obj);
-		ui::Text* audio = m_options->GetText("audioText");
+		ui::Text* audio = m_options->Get<ui::Text>("audioText");
 
 		self->SetSize(300.f, 20.f);
 		self->SetPosition(audio->getPosition().x + 50, audio->getPosition().y + 60);
 	});
 	m_options->AddObject(audioSlider);
 
+
+	ui::Slider* scaleSlider = new ui::Slider("scaleSlider", m_font);
+	//audioSlider
 
 	// Sprites
 	/*sf::Texture* optionsBackgrowndText = new sf::Texture;
@@ -285,7 +289,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	backBut->SetClickFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		if (ctr.settings.GetAudioLevel() != m_options->GetSlider("audio")->GetValue())
+		if (ctr.settings.GetAudioLevel() != m_options->Get<ui::Slider>("audio")->GetValue())
 		{
 			switch (MessageBox(NULL, "Do you want to save?", "WARNING", MB_YESNOCANCEL))
 			{
@@ -343,7 +347,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	acceptBut->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->GetButton("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - (int)(10 / zoom),
+		self->shape.setPosition(window.mapPixelToCoords(sf::Vector2i(	window.mapCoordsToPixel(m_options->Get<ui::Button>("applyBut")->shape.getPosition()).x - (int)(self->shape.getSize().x / zoom) - (int)(10 / zoom),
 																		window.getSize().y - (int)(40 / zoom))));
 	});
 
@@ -735,14 +739,14 @@ void UserInterface::CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& win
 		case State::Menu:
 			if (e.key.code == sf::Keyboard::Q)
 			{
-				m_menu->GetSlider("audio")->SetValue(0.5f);
+				m_menu->Get<ui::Slider>("audio")->SetValue(0.5f);
 			}
 			break;
 
 		case State::Options:
 			if (e.key.code == sf::Keyboard::Escape)
 			{
-				m_options->GetButton("OptionsBack")->GetClickEvent()(m_options->GetButton("OptionsBack"));
+				m_options->Get<ui::Button>("OptionsBack")->GetClickEvent()(m_options->Get<ui::Button>("OptionsBack"));
 			}
 			break;
 
@@ -767,19 +771,19 @@ void UserInterface::CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& win
 		case State::End:
 			if (e.key.code == sf::Keyboard::Space)
 			{
-				ui::Button* functButton = m_finish->GetButton("nextB");
+				ui::Button* functButton = m_finish->Get<ui::Button>("nextB");
 				functButton->GetClickEvent()(functButton);
 				break;
 			}
 			if (e.key.code == sf::Keyboard::R)
 			{
-				ui::Button* functButton = m_finish->GetButton("resetB");
+				ui::Button* functButton = m_finish->Get<ui::Button>("resetB");
 				functButton->GetClickEvent()(functButton);
 				break;
 			}
 			if (e.key.code == sf::Keyboard::M)
 			{
-				ui::Button* functButton = m_finish->GetButton("menuB");
+				ui::Button* functButton = m_finish->Get<ui::Button>("menuB");
 				functButton->GetClickEvent()(functButton);
 				break;
 			}
@@ -837,27 +841,27 @@ void UserInterface::BeginPlay(Controller& ctr)
 	}
 }
 
-Widget* UserInterface::GetMenuWidget()
+ui::Widget* UserInterface::GetMenuWidget()
 {
 	return m_menu;
 }
 
-Widget* UserInterface::GetOptionsWidget()
+ui::Widget* UserInterface::GetOptionsWidget()
 {
 	return m_options;
 }
 
-Widget* UserInterface::GetPauseWidget()
+ui::Widget* UserInterface::GetPauseWidget()
 {
 	return m_pause;
 }
 
-Widget* UserInterface::GetPlayWidget()
+ui::Widget* UserInterface::GetPlayWidget()
 {
 	return m_play;
 }
 
-Widget* UserInterface::GetFinishWidget()
+ui::Widget* UserInterface::GetFinishWidget()
 {
 	return m_finish;
 }

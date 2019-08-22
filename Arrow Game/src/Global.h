@@ -1,7 +1,5 @@
 #pragma once
 
-#define m_GLOBAL
-
 #define NO_RECORD 123456789.0f
 #define PI 3.1415926535
 

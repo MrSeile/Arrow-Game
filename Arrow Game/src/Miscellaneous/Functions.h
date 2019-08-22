@@ -1,7 +1,5 @@
 #pragma once
 
-#define m_FUNCTIONS
-
 #include "..\Global.h"
 #include "..\Game\World.h"
 #include "..\Game\Settings.h"

@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Arrow Game", "Arrow Game\Arrow Game.vcxproj", "{44D12EDC-BB49-4908-8443-DF93BDFF0A43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UITools", "vendor\UITools\UITools.vcxproj", "{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vendor", "vendor", "{42483C55-3703-4FF6-95AE-3FE1971CAA94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +25,22 @@ Global
 		{44D12EDC-BB49-4908-8443-DF93BDFF0A43}.Release|x64.Build.0 = Release|x64
 		{44D12EDC-BB49-4908-8443-DF93BDFF0A43}.Release|x86.ActiveCfg = Release|Win32
 		{44D12EDC-BB49-4908-8443-DF93BDFF0A43}.Release|x86.Build.0 = Release|Win32
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Debug|x64.ActiveCfg = Debug|x64
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Debug|x64.Build.0 = Debug|x64
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Debug|x86.ActiveCfg = Debug|Win32
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Debug|x86.Build.0 = Debug|Win32
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Release|x64.ActiveCfg = Release|x64
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Release|x64.Build.0 = Release|x64
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Release|x86.ActiveCfg = Release|Win32
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B545BB43-3E93-4876-9D6D-1BEB1E25C1AD} = {42483C55-3703-4FF6-95AE-3FE1971CAA94}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D9E149BF-14BE-4B27-B706-321C4D93FCCF}
 	EndGlobalSection
 EndGlobal

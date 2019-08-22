@@ -1,7 +1,5 @@
 #pragma once
 
-#define m_SETTINGS
-
 #include "..\Global.h"
 
 class Settings

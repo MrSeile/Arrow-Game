@@ -1,7 +1,5 @@
 #pragma once
 
-#define m_ROCKET
-
 #include "..\Global.h"
 #include "World.h"
 
