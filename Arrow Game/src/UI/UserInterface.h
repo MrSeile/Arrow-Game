@@ -1,8 +1,8 @@
 #pragma once
 
+#include <UITools.h>
 #include "..\Global.h"
 #include "..\Miscellaneous\Functions.h"
-#include <UITools.h>
 #include "..\Game\Controller.h"
 #include "..\Game\Rocket.h"
 

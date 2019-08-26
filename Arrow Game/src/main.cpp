@@ -219,7 +219,7 @@ int main()
 		r.Draw(window);
 
 		// Set the camera center to the arrow position
-		UI.zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x;
+		UI.zoom = (float)sf::VideoMode::getFullscreenModes()[0].width / (float)window.getSize().x * ctr.settings.GetUIScale();
 
 		view.setCenter(r.pos);
 		view.setSize(window.getSize().x * UI.zoom, window.getSize().y * UI.zoom);

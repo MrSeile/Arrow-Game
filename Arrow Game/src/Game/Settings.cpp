@@ -1,6 +1,7 @@
 #include "Settings.h"
 
 Settings::Settings()
+	: m_uiScale(1)
 {
 
 }
@@ -29,6 +30,11 @@ void Settings::SetAudioLevel(const float& value)
 	{
 		m_audioLevel = value;
 	}
+}
+
+void Settings::SetUIScale(const float& scale)
+{
+	m_uiScale = scale;
 }
 
 void Settings::EnableLightning()
@@ -61,6 +67,11 @@ const float& Settings::GetAudioLevel()
 const bool& Settings::GetLigthing()
 {
 	return m_lightning;
+}
+
+const float& Settings::GetUIScale()
+{
+	return m_uiScale;
 }
 
 const sf::ContextSettings& Settings::GetContextSettings()

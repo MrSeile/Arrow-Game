@@ -2,7 +2,8 @@
 
 void UserInterface::Apply(Controller& ctr)
 {
-	ctr.settings.SetAudioLevel(m_options->Get<ui::Slider>("audio")->GetValue());
+	ctr.settings.SetAudioLevel(m_options->Get<ui::Slider>("audioSlider")->GetValue());
+	ctr.settings.SetUIScale(m_options->Get<ui::Slider>("scaleSlider")->GetValue());
 }
 
 UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ctr, std::thread& ligthing)
@@ -39,7 +40,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	m_menu->AddObject(menuImg);
 	m_options->AddObject(menuImg);
 
-	// Texts
+	// Title
 	ui::Text* title = new ui::Text("title");
 	title->setFont(m_font);
 	title->setOutlineColor(sf::Color::Black);
@@ -55,7 +56,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	});
 	m_menu->AddObject(title);
 
-	// Buttons
+	// Quit button
 	ui::Button* quitB = new ui::Button("quitButton");
 	quitB->text.setFont(m_font);
 	quitB->text.setCharacterSize(30);
@@ -79,6 +80,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 
 	m_menu->AddObject(quitB);
 
+	// Option button
 	ui::Button* optionsBut = new ui::Button("OptionsBut");
 	optionsBut->text.setFont(m_font);
 	optionsBut->text.setString("Options");
@@ -100,7 +102,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	});
 	m_menu->AddObject(optionsBut);
 
-
+	// Worlds
 	for (World& w : ctr.worlds)
 	{
 		ui::Button* b = new ui::Button(w.id);
@@ -192,7 +194,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	/////////////////////////
 	// OPTIONS
 	/////////////////////////
-	// Texts
+	// Audio title
 	ui::Text* audioText = new ui::Text("audioText");
 	audioText->setFont(m_font);
 	audioText->setCharacterSize(40);
@@ -206,10 +208,11 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	
 	m_options->AddObject(audioText);
 
-	// Sliders
-	ui::Slider* audioSlider = new ui::Slider("audio", m_font);
-	audioSlider->SetSize(200, 10);
-	audioSlider->ShowValue();
+	// Audio slider
+	ui::Slider* audioSlider = new ui::Slider("audioSlider", m_font);
+	audioSlider->SetSize(300, 20);
+	audioSlider->SetRange({ 0, 100 });
+	audioSlider->SetStep(0.5f);
 	audioSlider->GetText().setFillColor(sf::Color::Black);
 
 	audioSlider->SetBeginPlayFunction([&](ui::UIObject* obj)
@@ -221,16 +224,29 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	audioSlider->SetUpdateFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Slider*>(obj);
-		ui::Text* audio = m_options->Get<ui::Text>("audioText");
+		ui::Text* title = m_options->Get<ui::Text>("audioText");
 
-		self->SetSize(300.f, 20.f);
-		self->SetPosition(audio->getPosition().x + 50, audio->getPosition().y + 60);
+		//self->SetSize(300.f, 20.f);
+		self->SetPosition(title->getPosition().x + 50, title->getPosition().y + 60);
 	});
 	m_options->AddObject(audioSlider);
 
-
+	// Scale slider
 	ui::Slider* scaleSlider = new ui::Slider("scaleSlider", m_font);
-	//audioSlider
+	scaleSlider->SetSize(300, 20);
+	scaleSlider->SetRange({ 0.2f, 1.8f });
+	scaleSlider->SetValue(1.f);
+	scaleSlider->SetStep(0.1f);
+	scaleSlider->GetText().setFillColor(sf::Color::Black);
+
+	scaleSlider->SetUpdateFunction([&](ui::UIObject* obj)
+	{
+		auto self = dynamic_cast<ui::Slider*>(obj);
+		ui::Text* title = m_options->Get<ui::Text>("audioText");
+
+		self->SetPosition(title->getPosition().x + 50, title->getPosition().y + 60 + 20 + 20);
+	});
+	m_options->AddObject(scaleSlider);
 
 	// Sprites
 	/*sf::Texture* optionsBackgrowndText = new sf::Texture;
@@ -289,7 +305,7 @@ UserInterface::UserInterface(sf::RenderWindow& window, Rocket& r, Controller& ct
 	backBut->SetClickFunction([&](ui::UIObject* obj)
 	{
 		auto self = dynamic_cast<ui::Button*>(obj);
-		if (ctr.settings.GetAudioLevel() != m_options->Get<ui::Slider>("audio")->GetValue())
+		if (ctr.settings.GetAudioLevel() != m_options->Get<ui::Slider>("audioSlider")->GetValue())
 		{
 			switch (MessageBox(NULL, "Do you want to save?", "WARNING", MB_YESNOCANCEL))
 			{
@@ -739,7 +755,7 @@ void UserInterface::CheckInput(Controller& ctr, Rocket& r, sf::RenderWindow& win
 		case State::Menu:
 			if (e.key.code == sf::Keyboard::Q)
 			{
-				m_menu->Get<ui::Slider>("audio")->SetValue(0.5f);
+				m_menu->Get<ui::Slider>("audioSlider")->SetValue(0.5f);
 			}
 			break;
 

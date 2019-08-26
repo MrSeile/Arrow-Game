@@ -26,5 +26,5 @@ World* ReadFile(std::string path, const uint& index);
 template<typename T>
 inline T map(const T& value, const T& inputMin, const T& inputMax, const T& outputMin, const T& outputMax)
 {
-	return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (value - inputMin);
+	return outputMin + ((outputMax - outputMax) / (inputMax - inputMin)) * (value - inputMin);
 }
