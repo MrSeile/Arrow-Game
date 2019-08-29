@@ -72,13 +72,12 @@ int main()
 
 				if (ctr.GetState() == State::Options)
 				{
-					for (ui::UIObject* x : UI.GetOptionsWidget()->m_objects)
+					for (const ui::UIObject* x : UI.GetOptionsWidget()->GetObjects())
 					{
-						auto s = dynamic_cast<ui::Slider*>(x);
+						auto s = dynamic_cast<const ui::Slider*>(x);
 						if (!s)
-						{
 							continue;
-						}
+
 						if (s->IsPressed())
 						{
 							pressed = true;
